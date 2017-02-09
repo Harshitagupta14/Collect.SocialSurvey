@@ -1,0 +1,9 @@
+#profile_tab{background: #fff; display: table; width: 100%; vertical-align: top;}
+#profile_tab .profile_nav{display: table-cell; width: 200px; background:#ddae41; list-style: none; padding: 0; vertical-align: top;}
+#profile_tab .profile_nav li{clear: both; border-top:1px solid #ddae41; border-bottom:1px solid #ddae41; background: #ddae41;}
+#profile_tab .profile_nav li a{padding: 8px 10px; display: block; background: #ddae41; color: #ffffff; border-left:3px solid #ddae41;  font-size: 14px; position: relative; left: 1px;}
+#profile_tab .profile_nav li:hover a, #profile_tab .profile_nav li.ui-state-active a{background: #ffffff; color: #ddae41; text-decoration: none;}
+.profile_content{padding: 20px; border:1px solid #ddae41;}
+.profile_content .help-block { margin-top: 10px; }
+.profile_content .table { margin-bottom: 0; font-size: 14px;}
+legend { padding-bottom:10px; font-size: 14px; color: #ddae41;}

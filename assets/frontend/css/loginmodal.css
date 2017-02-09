@@ -1,0 +1,12 @@
+.modal-helper{text-align: center; padding: 15px 0;}
+.modal-helper a{color: #fff;}
+.modal-helper a:hover, .modal-helper a:focus{text-decoration: underline; color: #fff;}
+.modal-backdrop.in { opacity: 0.9; filter:alpha(opacity=90); }
+.modal .close{position: relative; z-index: 1;}
+.modal .input-group{margin-bottom: 25px;}
+.modal .input-group .input-group-addon{background: none;}
+.modal .input-group .form-control{font-size: 14px; font-weight: 300;}
+.modal .input-group .form-control:focus{box-shadow: none;}
+.modal .modal-footer .btn{text-transform: uppercase; font-weight: 300;}
+.modal-header{background: #fafafa; border-radius:5px 5px 0 0;}
+.modal-body, .modal-footer, .modal-header { padding: 25px; }

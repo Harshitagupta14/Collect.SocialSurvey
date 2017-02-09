@@ -1,0 +1,26 @@
+.captcha_table {
+    background: #111;
+    border: 1px solid #000;
+    width: 100%;
+}
+.captcha_table td {
+    padding: 5px;
+}
+.captcha_table td .form-control {
+    height: 40px;
+}
+.captcha_table td .btn {
+    padding: 9px 12px;
+}
+
+
+
+SELECT tbl_category_specification.*,tbl_product_features.* FROM 
+tbl_category_specification
+LEFT JOIN tbl_product_features
+ON tbl_category_specification.category_id=tbl_product_features.category_id and tbl_category_specification.feature_id=tbl_product_features.feature_id
+where tbl_product_features.product_id='1'
+ORDER BY tbl_category_specification.specification_id
+
+
+
