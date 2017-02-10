@@ -148,10 +148,9 @@ class Survey extends CI_Controller {
         $this->load->view($this->config->item('template') . '/survey/other_response_feeds');
         $this->load->view($this->config->item('template') . '/footer_dashboard');
     }
-    public function survey_response_published($survey_response_id = NULL){
-        $data['survey_feeds'] = $this->survey->get_published_response_feeds_by_args($survey_response_id,'published');
-        print_r($data['survey_feeds']);
-        die();
+
+    public function survey_response_published($survey_response_id = NULL) {
+        $data['survey_question_data'] = $this->survey->get_published_response_feeds_by_args($survey_response_id, 'published');
         $this->load->view($this->config->item('template') . '/header_dashboard', $data);
         $this->load->view($this->config->item('template') . '/survey/edit_publish_response');
         $this->load->view($this->config->item('template') . '/footer_dashboard');

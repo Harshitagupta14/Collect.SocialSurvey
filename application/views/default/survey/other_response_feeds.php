@@ -68,7 +68,7 @@
         <div class="row" id="survey_container">
             <?php
             foreach ($survey_feeds as $survey) {
-            ?>
+                ?>
                 <div class="col-md-4" data-survey-id="<?php echo $survey['survey_id']; ?>">
                     <!-- BEGIN Portlet PORTLET-->
                     <div class="portlet light">
@@ -93,8 +93,8 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="actions" style="float:right;">
-                                        <?php $survey_url = (isset($survey['survey_res_status']) && $survey['survey_res_status'] == 'published') ? 'survey-response-published' : 'survey-response-draft' ;?>
-                                        <a class="btn btn-circle btn-icon-only btn-default" href="<?php echo site_url($survey_url.'/' . $survey['id']); ?>">
+                                        <?php $survey_url = (isset($survey['survey_res_status']) && $survey['survey_res_status'] == 'published') ? 'survey-response-published' : 'survey-response-draft'; ?>
+                                        <a class="btn btn-circle btn-icon-only btn-default" href="<?php echo site_url($survey_url . '/' . $survey['id']); ?>">
                                             <i class="fa fa-edit"></i>
                                         </a>
                                     </div>

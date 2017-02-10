@@ -54,8 +54,8 @@ class Survey_Model extends CI_Model {
     }
 
     public function get_survey_respone_feeds_by_args($status = FALSE, $surveyor_id = FALSE) {
-        $survey_select = '`survey_response`.*,`survey`.`survey_title`,`survey`.`id`,`survey`.`survey_id`';
-        $final_select = " $survey_select,count(`survey_question`.`id`)as question_count";
+        $survey_select = '`survey_response`.*,`survey`.`survey_title`';
+        $final_select = " $survey_select ,count(`survey_question`.`id`)as question_count";
         $final_query = $this->db->select($final_select)
                 ->from("`tbl_survey_response` as `survey_response`")
                 ->join("`tbl_survey` as `survey` ", ' survey.id = survey_response.survey_fk_id', 'left')
@@ -63,22 +63,23 @@ class Survey_Model extends CI_Model {
                 ->where("`survey_response`.`surveyor_fk_id`", $surveyor_id)
                 ->where("`survey_response`.`survey_res_status`", $status)
                 ->group_by('survey_response.id')
-                ->order_by('survey_response.add_time', 'DESC')
+                ->order_by('survey_response.id', 'DESC')
                 ->get();
         return $final_query->result_array();
     }
 
-   public function get_published_response_feeds_by_args($response_id = FALSE,$status = FALSE) {
-       $survey_select = '`survey_response`.*,`survey_question`.*,`survey_response_question`.*';
-        $final_select = " $survey_select";
+    public function get_published_response_feeds_by_args($response_id = FALSE, $status = FALSE) {
+        $survey_select = '`survey_response`.*,`survey_question`.*,`survey_response_question`.*';
+        $final_select = " $survey_select, survey_type.type_small_name, survey_type.type_name";
 
         $final_query = $this->db->select($final_select)
                 ->from("`tbl_survey_response` as `survey_response`")
                 ->join("`tbl_survey_question` as `survey_question` ", ' survey_question.survey_fk_id = survey_response.survey_fk_id', 'left')
-                ->join("`tbl_survey_question_response` as `survey_response_question` ", ' survey_response_question.survey_res_fk_id = survey_response.id', 'left')
+                ->join("`tbl_survey_question_type` as `survey_type` ", ' survey_question.type_id_fk = survey_type.id', 'left')
+                ->join("`tbl_survey_question_response` as `survey_response_question` ", ' survey_response_question.question_no = survey_question.question_no', 'left')
                 ->where("`survey_response`.`id`", $response_id)
                 ->where("`survey_response`.`survey_res_status`", $status)
-//                ->group_by('survey.survey_id')
+                ->group_by('survey_response_question.question_no')
                 ->order_by('survey_response_question.question_no', 'DESC')
                 ->get();
         return $final_query->result_array();
