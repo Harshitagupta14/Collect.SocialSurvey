@@ -41,8 +41,7 @@ class Survey_Model extends CI_Model {
         $this->db->update('tbl_survey_question');
     }
 
-    public function get_surveyor_by_args(
-    $parent_id = FALSE) {
+    public function get_surveyor_by_args($parent_id = FALSE) {
         $survey_select = '`user_accounts`.*';
         $final_select = " $survey_select, `user_profiles`.*";
         $this->db->select($final_select);
@@ -51,6 +50,21 @@ class Survey_Model extends CI_Model {
         $this->db->where("`user_accounts.uacc_parent_id_fk`", $parent_id);
         $this->db->order_by('user_accounts.uacc_id', 'ASEC');
         $final_query = $this->db->get();
+        return $final_query->result_array();
+    }
+
+    public function get_survey_respone_feeds_by_args($status = FALSE, $surveyor_id = FALSE) {
+        $survey_select = '`survey_response`.*,`survey`.`survey_title`';
+        $final_select = " $survey_select,count(`survey_question`.`id`)as question_count";
+        $final_query = $this->db->select($final_select)
+                ->from("`tbl_survey_response` as `survey_response`")
+                ->join("`tbl_survey` as `survey` ", ' survey.id = survey_response.survey_fk_id', 'left')
+                ->join("`tbl_survey_question` as `survey_question` ", ' survey_question.survey_fk_id = survey_response.survey_fk_id', 'left')
+                ->where("`survey_response`.`surveyor_fk_id`", $surveyor_id)
+                ->where("`survey_response`.`survey_res_status`", $status)
+                ->group_by('survey_response.id')
+                ->order_by('survey_response.add_time', 'DESC')
+                ->get();
         return $final_query->result_array();
     }
 

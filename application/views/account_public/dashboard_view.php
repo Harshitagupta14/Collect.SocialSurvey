@@ -25,7 +25,10 @@
             <div class="tab-content">
                 <div class="tab-pane active" id="tab_survey">
                     <div class="row" id="survey_container">
-                        <?php foreach ($survey_feeds as $survey) { ?>
+                        <?php
+                        foreach ($survey_feeds as $survey) {
+                            $survey['response_count'] = $this->common_model->num_rows('tbl_survey_response', array('survey_fk_id' => $survey['id']));
+                            ?>
                             <div class="col-md-4" data-survey-id="<?php echo $survey['survey_id']; ?>">
                                 <!-- BEGIN Portlet PORTLET-->
                                 <div class="portlet light">
@@ -33,12 +36,12 @@
                                         <ul class="nav nav-pills">
                                             <li class="tooltips" data-container="body" data-placement="top" data-original-title="Questios">
                                                 <a href="#" style="background-color:#eee;"> <i class="fa fa-question-circle m-r-5"></i>
-                                                    <span class="badge badge-danger"> <?php echo $survey['question_count']; ?> </span>
+                                                    <span class="badge badge-danger"> <?php echo (isset($survey['question_count']) && $survey['question_count'] != 0) ? $survey['question_count'] : '0'; ?> </span>
                                                 </a>
                                             </li>
                                             <li  class="tooltips" data-container="body" data-placement="top" data-original-title="Responses">
                                                 <a href="#" style="background-color:#eee;"> <i class="fa fa-area-chart"></i>
-                                                    <span class="badge badge-danger"> 3 </span>
+                                                    <span class="badge badge-danger"> <?php echo (isset($survey['response_count']) && $survey['response_count'] != 0) ? $survey['response_count'] : '0'; ?> </span>
                                                 </a>
                                             </li>
                                             <li style="float:right;"><i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo $this->components->time_elapsed_string($survey['add_time']); ?></li>
@@ -69,7 +72,50 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tab_profile">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <a href="<?php echo site_url('published-response'); ?>" style="text-decoration:none;">
+                                <div class="portlet light ">
+                                    <div class="portlet-body">
+                                        <div class="tab-content">
+                                            <div class="tab-pane active" id="tab_actions_pending">
+                                                <i class="btn btn-circle btn-icon-only icon-cloud-upload"></i>
+                                                <span class="caption-subject font-dark bold">Online Response</span>
+                                                <span class="badge <?php echo (isset($published_response) && $published_response != 0) ? 'badge-primary' : 'badge-default'; ?>" id="question_1_badge" style="float:right;"> <?php echo $published_response; ?></span>
+                                            </div>
 
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            <!--<div class="portlet light ">
+                                <div class="portlet-body">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_actions_pending">
+                                            <i class="btn btn-circle btn-icon-only icon-cloud-upload"></i>
+                                            <span class="caption-subject font-dark bold">Offline Response</span>
+                                            <span class="badge badge-default" id="question_1_badge" style="float:right;"> 1 </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>-->
+                            <a href="<?php echo site_url('draft-response'); ?>" style="text-decoration:none;">
+                                <div class="portlet light ">
+                                    <div class="portlet-body">
+                                        <div class="tab-content">
+                                            <div class="tab-pane active" id="tab_actions_pending">
+                                                <i class="btn btn-circle btn-icon-only icon-cloud-upload"></i>
+                                                <span class="caption-subject font-dark bold">Draft Response</span>
+                                                <span class="badge <?php echo (isset($draft_response) && $draft_response != 0) ? 'badge-primary' : 'badge-default'; ?>" id="question_1_badge" style="float:right;"> <?php echo $draft_response; ?> </span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane" id="tab_settings">
 
