@@ -35,6 +35,8 @@ class Auth_Public extends CI_Controller {
         $this->data['user'] = $this->flexi_auth->get_user_by_identity_row_array();
         $parent_id = $this->data['user']['uacc_parent_id_fk'];
         $this->data['survey_feeds'] = $this->survey->get_published_survey_feeds_by_args($parent_id);
+        $this->data['published_response'] = $this->common_model->num_rows('tbl_survey_response', array('survey_res_status' => 'published'));
+        $this->data['draft_response'] = $this->common_model->num_rows('tbl_survey_response', array('survey_res_status' => 'draft'));
         $this->load->view($this->config->item('public_login_folder') . '/header', $this->data);
         $this->load->view($this->config->item('public_login_folder') . '/dashboard_view', $this->data);
         $this->load->view($this->config->item('public_login_folder') . '/footer', $this->data);

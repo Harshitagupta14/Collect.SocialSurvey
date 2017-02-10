@@ -124,7 +124,10 @@ $route['ajax-change-surveyor-status'] = 'organization/ajax_change_surveyor_statu
 $route['ajax-update-organization-details'] = 'organization/ajax_update_organization_details/';
 
 //Survey Reponse Routes
+$route['published-response'] = 'survey/published_response/';
+$route['draft-response'] = 'survey/draft_response/';
 $route['ajax-publish-survey-response'] = 'survey/ajax_publish_survey_response/';
+
 
 
 //======= Admin Related Urls===================//

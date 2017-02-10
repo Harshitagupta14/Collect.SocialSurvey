@@ -131,4 +131,22 @@ class Survey extends CI_Controller {
         die;
     }
 
+    public function published_response() {
+        $surveyor_id = $this->flexi_auth->get_user_by_identity_row_array()['uacc_id'];
+        $data['survey_feeds'] = $this->survey->get_survey_respone_feeds_by_args('published', $surveyor_id);
+        $data['response_title'] = 'Published Responses';
+        $this->load->view($this->config->item('template') . '/header_dashboard', $data);
+        $this->load->view($this->config->item('template') . '/survey/other_response_feeds');
+        $this->load->view($this->config->item('template') . '/footer_dashboard');
+    }
+
+    public function draft_response() {
+        $surveyor_id = $this->flexi_auth->get_user_by_identity_row_array()['uacc_id'];
+        $data['survey_feeds'] = $this->survey->get_survey_respone_feeds_by_args('draft', $surveyor_id);
+        $data['response_title'] = 'Draft Responses';
+        $this->load->view($this->config->item('template') . '/header_dashboard', $data);
+        $this->load->view($this->config->item('template') . '/survey/other_response_feeds');
+        $this->load->view($this->config->item('template') . '/footer_dashboard');
+    }
+
 }
