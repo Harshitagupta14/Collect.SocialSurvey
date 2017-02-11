@@ -156,4 +156,19 @@ class Survey extends CI_Controller {
         $this->load->view($this->config->item('template') . '/footer_dashboard');
     }
 
+//    public function ajax_update_survey_response() {
+//        print_r($_POST);
+//        die;
+//        parse_str($_POST['str'], $_POST);
+//        $response = $this->update_publish_survey_response();
+//        if ($response) {
+//            $data['success'] = "true";
+//        } else {
+//            $data['success'] = "false";
+//        }
+//        echo json_encode($data);
+//        die;
+//    }
+
+
 }
