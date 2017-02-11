@@ -69,18 +69,19 @@ class Survey_Model extends CI_Model {
     }
 
     public function get_published_response_feeds_by_args($response_id = FALSE, $status = FALSE) {
-        $survey_select = '`survey_response`.*,`survey_question`.*,`survey_response_question`.*';
+        $survey_select = '`survey_response`.*,`survey_response`.`id` as response_id,`survey_question`.*,`survey_response_question`.*,`survey_response_question`.`id` as question_response_id,`survey`.`survey_id`,`survey`.`survey_title`';
         $final_select = " $survey_select, survey_type.type_small_name, survey_type.type_name";
 
         $final_query = $this->db->select($final_select)
                 ->from("`tbl_survey_response` as `survey_response`")
+                ->join("`tbl_survey` as `survey` ", ' survey.id = survey_response.survey_fk_id', 'left')
                 ->join("`tbl_survey_question` as `survey_question` ", ' survey_question.survey_fk_id = survey_response.survey_fk_id', 'left')
                 ->join("`tbl_survey_question_type` as `survey_type` ", ' survey_question.type_id_fk = survey_type.id', 'left')
                 ->join("`tbl_survey_question_response` as `survey_response_question` ", ' survey_response_question.question_no = survey_question.question_no', 'left')
                 ->where("`survey_response`.`id`", $response_id)
                 ->where("`survey_response`.`survey_res_status`", $status)
                 ->group_by('survey_response_question.question_no')
-                ->order_by('survey_response_question.question_no', 'DESC')
+                ->order_by('survey_response_question.question_no', 'ASC')
                 ->get();
         return $final_query->result_array();
     }

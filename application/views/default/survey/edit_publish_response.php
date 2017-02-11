@@ -65,14 +65,15 @@
         <div class="question-modal"></div>
 
         <div class="col-md-6">
-            <h1 class="page-title"> <?php echo ucfirst($survey_data['survey_title']); ?>
+            <h1 class="page-title"> <?php echo ucfirst($survey_question_data[0]['survey_title']); ?>
                 <small>Survey</small>
             </h1>
 
             <div id="survey-questions-block">
 
                 <form method="post" id="survey_response_form" >
-                    <input type="hidden" value="<?php echo $survey_id; ?>" name="survey_id" />
+                    <input type="hidden" value="<?php echo $survey_question_data[0]['survey_id']; ?>" name="survey_id" />
+                    <input type="hidden" value="<?php echo $survey_question_data[0]['response_id']; ?>" name="survey_response_id" />
                     <input type="hidden" value="<?php echo count($survey_question_data); ?>" name="total_question" id="total_question" />
                     <?php foreach ($survey_question_data as $key => $value) { ?>
                         <div class="col-md-12">
@@ -108,19 +109,20 @@
                                                                         <input type="hidden" id="question_limit_upper_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_limit_upper']; ?>" />
                                                                         <input type="hidden" id="question_multiple_options_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_multiple_options']; ?>" />
                                                                         <input type="hidden" id="question_type_<?php echo $value['question_no']; ?>" value="<?php echo $value['type_name']; ?>" />
+                                                                        <input type="hidden" name="question_response_id_<?php echo $value['question_no']; ?>"" value="<?php echo $value['question_response_id']; ?>" />
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="mt-action-row">
                                                                 <div class="col-md-12" style="padding-top:10px;">
-                                                                     <!--input-group--> 
+                                                                    <!--input-group-->
                                                                     <a class="input-group" data-toggle="modal" href="#modal_<?php echo $value['question_no']; ?>" onclick="create_modal(<?php echo $value['question_no']; ?>);" data-question-type="<?php echo $value['type_name']; ?>" style="cursor:pointer;" onclick="create_modal(<?php echo $value['question_no']; ?>);">
                                                                         <input class="form-control" id="response_<?php echo $value['question_no']; ?>" name="response_<?php echo $value['question_no']; ?>" placeholder="" readonly="" type="text" style="cursor:pointer;" value="<?php echo $value['question_response']; ?>">
                                                                         <span class="input-group-btn">
                                                                             <i class="btn blue fa fa-arrow-right"></i>
                                                                         </span>
                                                                     </a>
-                                                                     <!--/input-group--> 
+                                                                    <!--/input-group-->
                                                                 </div>
                                                             </div>
                                                         </div>
