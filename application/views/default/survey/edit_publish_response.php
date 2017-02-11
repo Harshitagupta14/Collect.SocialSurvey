@@ -81,7 +81,7 @@
                                     <div class="portlet-title tabbable-line">
                                         <div class="caption">
                                             <i class=" icon-social-twitter font-dark hide"></i>
-                                            <span class="badge badge-default" id="question_<?php echo $value['question_no']; ?>_badge"> <?php echo $value['question_no']; ?> </span>
+                                            <span class="badge badge-success" id="question_<?php echo $value['question_no']; ?>_badge"> <?php echo $value['question_no']; ?> </span>
                                             <span class="caption-subject font-dark bold uppercase"><?php echo $value['type_name']; ?></span>
                                         </div>
                                         <span class="question-required-label"></span>
@@ -113,14 +113,14 @@
                                                             </div>
                                                             <div class="mt-action-row">
                                                                 <div class="col-md-12" style="padding-top:10px;">
-                                                                    <!-- input-group -->
+                                                                     <!--input-group--> 
                                                                     <a class="input-group" data-toggle="modal" href="#modal_<?php echo $value['question_no']; ?>" onclick="create_modal(<?php echo $value['question_no']; ?>);" data-question-type="<?php echo $value['type_name']; ?>" style="cursor:pointer;" onclick="create_modal(<?php echo $value['question_no']; ?>);">
-                                                                        <input class="form-control" id="response_<?php echo $value['question_no']; ?>" name="response_<?php echo $value['question_no']; ?>" placeholder="" readonly="" type="text" style="cursor:pointer;" >
+                                                                        <input class="form-control" id="response_<?php echo $value['question_no']; ?>" name="response_<?php echo $value['question_no']; ?>" placeholder="" readonly="" type="text" style="cursor:pointer;" value="<?php echo $value['question_response']; ?>">
                                                                         <span class="input-group-btn">
                                                                             <i class="btn blue fa fa-arrow-right"></i>
                                                                         </span>
                                                                     </a>
-                                                                    <!-- /input-group -->
+                                                                     <!--/input-group--> 
                                                                 </div>
                                                             </div>
                                                         </div>
