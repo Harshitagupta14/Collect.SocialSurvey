@@ -112,7 +112,7 @@
                             </div>
                             <div class="col-xs-7 bs-reset">
                                 <div class="login-copyright text-right">
-                                    <p>Copyright &copy; SOCIALCOP PVT LTD 2016</p>
+                                    <p>Copyright &copy; Universal E-Solution Pvt. Ltd 2017</p>
                                 </div>
                             </div>
                         </div>

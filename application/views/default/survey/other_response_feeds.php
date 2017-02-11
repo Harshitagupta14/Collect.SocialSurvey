@@ -67,44 +67,52 @@
         </h1>
         <div class="row" id="survey_container">
             <?php
-            foreach ($survey_feeds as $survey) {
-                ?>
-                <div class="col-md-4" data-survey-id="<?php echo $survey['survey_id']; ?>">
-                    <!-- BEGIN Portlet PORTLET-->
-                    <div class="portlet light">
-                        <div class="portlet-title">
-                            <ul class="nav nav-pills">
-                                <li class="tooltips" data-container="body" data-placement="top" data-original-title="Questios">
-                                    <a href="#" style="background-color:#eee;"> <i class="fa fa-question-circle m-r-5"></i>
-                                        <span class="badge badge-danger"> <?php echo (isset($survey['question_count']) && $survey['question_count'] != 0) ? $survey['question_count'] : '0'; ?> </span>
-                                    </a>
-                                </li>
-                                <li style="float:right;"><i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo $this->components->time_elapsed_string($survey['add_time']); ?></li>
-                            </ul>
-
-                        </div>
-                        <div class="portlet-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h3><?php echo $survey['survey_title']; ?></h3>
-                                    <span><strong><?php echo $survey['question_count']; ?> Questions</strong> </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="actions" style="float:right;">
-                                        <?php $survey_url = (isset($survey['survey_res_status']) && $survey['survey_res_status'] == 'published') ? 'survey-response-published' : 'survey-response-draft'; ?>
-                                        <a class="btn btn-circle btn-icon-only btn-default" href="<?php echo site_url($survey_url . '/' . $survey['id']); ?>">
-                                            <i class="fa fa-edit"></i>
+            $count = count($survey_feeds);
+            if ($count > 0) {
+                foreach ($survey_feeds as $survey) {
+                    ?>
+                    <div class="col-md-4" data-survey-id="<?php echo $survey['survey_id']; ?>">
+                        <!-- BEGIN Portlet PORTLET-->
+                        <div class="portlet light">
+                            <div class="portlet-title">
+                                <ul class="nav nav-pills">
+                                    <li class="tooltips" data-container="body" data-placement="top" data-original-title="Questios">
+                                        <a href="#" style="background-color:#eee;"> <i class="fa fa-question-circle m-r-5"></i>
+                                            <span class="badge badge-danger"> <?php echo (isset($survey['question_count']) && $survey['question_count'] != 0) ? $survey['question_count'] : '0'; ?> </span>
                                         </a>
+                                    </li>
+                                    <li style="float:right;"><i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo $this->components->time_elapsed_string($survey['add_time']); ?></li>
+                                </ul>
+
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h3><?php echo $survey['survey_title']; ?></h3>
+                                        <span><strong><?php echo $survey['question_count']; ?> Questions</strong> </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="actions" style="float:right;">
+                                            <?php $survey_url = (isset($survey['survey_res_status']) && $survey['survey_res_status'] == 'published') ? 'survey-response-published' : 'survey-response-draft'; ?>
+                                            <a class="btn btn-circle btn-icon-only btn-default" href="<?php echo site_url($survey_url . '/' . $survey['id']); ?>">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        </div>
+
+                                        <div class="mdl-grid " id="card_view_container"></div>
+
+
                                     </div>
 
-                                    <div class="mdl-grid " id="card_view_container"></div>
+                                </div>  </div>  </div>  </div> <?php
+                }
+            } else {
+                ?>
+                <div class="col-md-4">No Response Data Found.</div>
 
-
-                                </div>
-
-                            </div>  </div>  </div>  </div> <?php } ?>
+<?php } ?>
         </div>
 
     </div>

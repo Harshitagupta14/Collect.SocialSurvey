@@ -80,7 +80,7 @@
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tab_actions_pending">
                                                 <i class="btn btn-circle btn-icon-only icon-cloud-upload"></i>
-                                                <span class="caption-subject font-dark bold">Online Response</span>
+                                                <span class="caption-subject font-dark bold">Published Response</span>
                                                 <span class="badge <?php echo (isset($published_response) && $published_response != 0) ? 'badge-primary' : 'badge-default'; ?>" id="question_1_badge" style="float:right;"> <?php echo $published_response; ?></span>
                                             </div>
 

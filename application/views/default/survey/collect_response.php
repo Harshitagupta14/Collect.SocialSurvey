@@ -393,15 +393,7 @@
         var valid = validate_survey_response();
         if (valid == true) {
             var str = $("#survey_response_form").serialize();
-            if (response_sumbit_status == 'publish_insert') {
-                // survey_publish_status
-            } else if (response_sumbit_status == 'publish_update') {
-
-            } else if (response_sumbit_status == 'draft_insert') {
-
-            } else if (response_sumbit_status == 'draft_update') {
-
-            }
+            str += '&survey_publish_status=' + response_sumbit_status;
             console.log(str);
             $.ajax({
                 type: "POST",

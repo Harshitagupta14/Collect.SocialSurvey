@@ -59,14 +59,25 @@ class Survey extends CI_Controller {
         $data_response['survey_fk_id'] = $survey_id;
         $data_response['surveyor_fk_id'] = $surveyor_id;
         $survey_publish_status = $this->input->post('survey_publish_status');
-        if (isset($survey_publish_status) && $survey_publish_status == 'publish_update') {
+        if (isset($survey_publish_status) && $survey_publish_status == 'publish_insert') {
+            $data_response['survey_res_status'] = 'published';
+            $data_response['add_time'] = date('Y-m-d H:i:s');
+            $this->common_model->insert_data('tbl_survey_response', $data_response);
+            $id = $this->db->insert_id();
+            for ($i = 1; $i <= $survey_total_question; $i++) {
+                $data_question_response[$i]['survey_res_fk_id'] = $id;
+                $data_question_response[$i]['question_no'] = $i;
+                $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
+                $data_question_response[$i]['add_time'] = date('Y-m-d H:i:s');
+            }
+            $response = $this->common_model->insert_batch('tbl_survey_question_response', $data_question_response);
+        } else if (isset($survey_publish_status) && $survey_publish_status == 'publish_update') {
             $data_response['survey_res_status'] = 'published';
             $data_response['modify_time'] = date('Y-m-d H:i:s');
             $survey_response_id = $this->input->post('survey_response_id');
             $this->common_model->update_data('tbl_survey_response', array('id' => $survey_response_id), $data_response);
             for ($i = 1; $i <= $survey_total_question; $i++) {
                 $data_question_response[$i]['id'] = $this->input->post('question_response_id_' . $i);
-                $data_question_response[$i]['survey_res_fk_id'] = $survey_response_id;
                 $data_question_response[$i]['question_no'] = $i;
                 $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
                 $data_question_response[$i]['modify_time'] = date('Y-m-d H:i:s');
@@ -84,18 +95,18 @@ class Survey extends CI_Controller {
                 $data_question_response[$i]['add_time'] = date('Y-m-d H:i:s');
             }
             $response = $this->common_model->insert_batch('tbl_survey_question_response', $data_question_response);
-        } else {
-            $data_response['survey_res_status'] = 'published';
-            $data_response['add_time'] = date('Y-m-d H:i:s');
-            $this->common_model->insert_data('tbl_survey_response', $data_response);
-            $id = $this->db->insert_id();
+        } else if (isset($survey_publish_status) && $survey_publish_status == 'draft_update') {
+            $data_response['survey_res_status'] = 'draft';
+            $data_response['modify_time'] = date('Y-m-d H:i:s');
+            $survey_response_id = $this->input->post('survey_response_id');
+            $this->common_model->update_data('tbl_survey_response', array('id' => $survey_response_id), $data_response);
             for ($i = 1; $i <= $survey_total_question; $i++) {
-                $data_question_response[$i]['survey_res_fk_id'] = $id;
+                $data_question_response[$i]['id'] = $this->input->post('question_response_id_' . $i);
                 $data_question_response[$i]['question_no'] = $i;
                 $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
-                $data_question_response[$i]['add_time'] = date('Y-m-d H:i:s');
+                $data_question_response[$i]['modify_time'] = date('Y-m-d H:i:s');
             }
-            $response = $this->common_model->insert_batch('tbl_survey_question_response', $data_question_response);
+            $response = $this->common_model->update_batch('tbl_survey_question_response', $data_question_response, 'id');
         }
 
         return $response;
@@ -179,7 +190,16 @@ class Survey extends CI_Controller {
     }
 
     public function survey_response_published($survey_response_id = NULL) {
-        $data['survey_question_data'] = $this->survey->get_published_response_feeds_by_args($survey_response_id, 'published');
+        $survey_id = $this->common_model->fetch_cell('tbl_survey_response', 'survey_fk_id', array('id' => $survey_response_id));
+        $data['survey_question_data'] = $this->survey->get_published_response_feeds_by_args($survey_id, $survey_response_id, 'published');
+        $this->load->view($this->config->item('template') . '/header_dashboard', $data);
+        $this->load->view($this->config->item('template') . '/survey/edit_publish_response');
+        $this->load->view($this->config->item('template') . '/footer_dashboard');
+    }
+
+    public function survey_response_draft($survey_response_id = NULL) {
+        $survey_id = $this->common_model->fetch_cell('tbl_survey_response', 'survey_fk_id', array('id' => $survey_response_id));
+        $data['survey_question_data'] = $this->survey->get_published_response_feeds_by_args($survey_id, $survey_response_id, 'draft');
         $this->load->view($this->config->item('template') . '/header_dashboard', $data);
         $this->load->view($this->config->item('template') . '/survey/edit_publish_response');
         $this->load->view($this->config->item('template') . '/footer_dashboard');

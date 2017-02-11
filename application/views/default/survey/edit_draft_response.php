@@ -144,11 +144,34 @@
 
         <div class="question-response-actions">
             <button type="button" class="btn btn-danger" id="exit_question_response" onclick="exit_question_response();" style="width:49%;"><i class="icon-close"></i>Exit</button>
-            <button type="button" class="btn btn-success" id="save_question_response" onclick="publish_question_response();" style="width:49%;"><i class="icon-cloud-upload"></i> Save</button>
+            <a type="button" id="add_surveyor" data-toggle="modal" href="#survey_response_save_options"  class="btn btn-success" style="width:49%;">Save</a>
+
         </div>
 
     </div>
-
+    <div id="survey_response_save_options" class="modal fade" >
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            <h4 class="modal-title">Save Options</h4>
+        </div>
+        <div class="modal-body">
+            <center>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" data-dismiss="modal" class="btn btn-outline btn-warning" onclick="save_question_response('draft_update');" style="width:100%;">Save as Draft</button><br/>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10%;">
+                    <div class="col-md-12">
+                        <button type="button" data-dismiss="modal" class="btn btn-outline btn-primary" onclick="save_question_response('publish_update');" style="width:100%;">Publish</button>
+                    </div>
+                </div>
+            </center>
+        </div>
+        <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        </div>
+    </div>
     <div id="modals">
     </div>
 </div>
@@ -350,10 +373,11 @@
         }
     }
 
-    function publish_question_response() {
+    function save_question_response(response_sumbit_status = '') {
         var valid = validate_survey_response();
         if (valid == true) {
             var str = $("#survey_response_form").serialize();
+            str += '&survey_publish_status=' + response_sumbit_status;
             console.log(str);
             $.ajax({
                 type: "POST",
@@ -376,7 +400,7 @@
                             $('.question-modal').html('');
                             $('.question-modal').hide();
                         }, 2000);
-                        window.location.href = '<?php echo site_url('dashboard'); ?>';
+                        //window.location.href = '<?php echo site_url('dashboard'); ?>';
                     } else if (stat.success === "false") {
                         $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_1.gif" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:green;">Publishing Response Unsuccessfull, Try again. ...</p>');
                         setTimeout(function () {

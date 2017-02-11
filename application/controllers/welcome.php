@@ -24,7 +24,7 @@ class Welcome extends CI_Controller {
         $this->load->view($this->config->item('template') . '/header', $data);
         $this->load->view($this->config->item('template') . '/home');
         $this->load->view($this->config->item('template') . '/footer');
-        //redirect(site_url('login'));
+        redirect(site_url('login'));
     }
 
     public function compare() {
