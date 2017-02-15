@@ -29,9 +29,9 @@ class Organization extends CI_Controller {
         $data['organization'] = $this->flexi_auth->get_user_by_identity_row_array();
         $data['organization_surveyor_data'] = $this->survey->get_surveyor_by_args($this->flexi_auth->get_user_by_identity_row_array()['uacc_id']);
         $data['breadcrumb'] = '<li class="active">Services</li>';
-        $this->load->view($this->config->item('template') . '/header_dashboard', $data);
-        $this->load->view($this->config->item('template') . '/organization/organization_dashboard');
-        $this->load->view($this->config->item('template') . '/footer_dashboard');
+        $this->load->view($this->config->item('template') . '/organization/header/header_dashboard', $data);
+        $this->load->view($this->config->item('template') . '/organization/main_contents/organization_dashboard');
+        $this->load->view($this->config->item('template') . '/organization/footer/footer_dashboard');
     }
 
     function ajax_register_surveyor() {

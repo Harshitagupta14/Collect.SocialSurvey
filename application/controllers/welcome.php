@@ -21,16 +21,16 @@ class Welcome extends CI_Controller {
         $data['METAKEYWORDS'] = "Home";
         $data['METADESCRIPTION'] = "Home";
         $data['current_page_slug'] = "Home";
-        $this->load->view($this->config->item('template') . '/header', $data);
-        $this->load->view($this->config->item('template') . '/home');
-        $this->load->view($this->config->item('template') . '/footer');
+        $this->load->view($this->config->item('template') . '/home/header/header', $data);
+        $this->load->view($this->config->item('template') . '/home/main_contents/home');
+        $this->load->view($this->config->item('template') . '/home/footer/footer');
         redirect(site_url('login'));
     }
 
     public function compare() {
-        $this->load->view($this->config->item('template') . '/header');
+        $this->load->view($this->config->item('template') . '/home/header/header');
         $this->load->view($this->config->item('template') . '/compare');
-        $this->load->view($this->config->item('template') . '/footer');
+        $this->load->view($this->config->item('template') . '/home/footer/footer');
     }
 
     public function productByTypeId() {

@@ -32,9 +32,9 @@ class Survey extends CI_Controller {
         $data['breadcrumb'] = '<li class="active">Services</li>';
         $data['survey_types'] = $this->common_model->fetch_where('tbl_survey_question_type');
         $data['survey_id'] = $survey_data['survey_id'];
-        $this->load->view($this->config->item('template') . '/header_dashboard', $data);
-        $this->load->view($this->config->item('template') . '/survey/collect_response');
-        $this->load->view($this->config->item('template') . '/footer_dashboard');
+        $this->load->view($this->config->item('template') . '/survey/header/header_dashboard', $data);
+        $this->load->view($this->config->item('template') . '/survey/main_contents/collect_response');
+        $this->load->view($this->config->item('template') . '/survey/footer/footer_dashboard');
     }
 
     public function ajax_publish_survey_response() {
@@ -175,34 +175,34 @@ class Survey extends CI_Controller {
         $surveyor_id = $this->flexi_auth->get_user_by_identity_row_array()['uacc_id'];
         $data['survey_feeds'] = $this->survey->get_survey_respone_feeds_by_args('published', $surveyor_id);
         $data['response_title'] = 'Published Responses';
-        $this->load->view($this->config->item('template') . '/header_dashboard', $data);
-        $this->load->view($this->config->item('template') . '/survey/other_response_feeds');
-        $this->load->view($this->config->item('template') . '/footer_dashboard');
+        $this->load->view($this->config->item('template') . '/survey/header/header_dashboard', $data);
+        $this->load->view($this->config->item('template') . '/survey/main_contents/other_response_feeds');
+        $this->load->view($this->config->item('template') . '/survey/footer/footer_dashboard');
     }
 
     public function draft_response() {
         $surveyor_id = $this->flexi_auth->get_user_by_identity_row_array()['uacc_id'];
         $data['survey_feeds'] = $this->survey->get_survey_respone_feeds_by_args('draft', $surveyor_id);
         $data['response_title'] = 'Draft Responses';
-        $this->load->view($this->config->item('template') . '/header_dashboard', $data);
-        $this->load->view($this->config->item('template') . '/survey/other_response_feeds');
-        $this->load->view($this->config->item('template') . '/footer_dashboard');
+        $this->load->view($this->config->item('template') . '/survey/header/header_dashboard', $data);
+        $this->load->view($this->config->item('template') . '/survey/main_contents/other_response_feeds');
+        $this->load->view($this->config->item('template') . '/survey/footer/footer_dashboard');
     }
 
     public function survey_response_published($survey_response_id = NULL) {
         $survey_id = $this->common_model->fetch_cell('tbl_survey_response', 'survey_fk_id', array('id' => $survey_response_id));
         $data['survey_question_data'] = $this->survey->get_published_response_feeds_by_args($survey_id, $survey_response_id, 'published');
-        $this->load->view($this->config->item('template') . '/header_dashboard', $data);
-        $this->load->view($this->config->item('template') . '/survey/edit_publish_response');
-        $this->load->view($this->config->item('template') . '/footer_dashboard');
+        $this->load->view($this->config->item('template') . '/survey/header/header_dashboard', $data);
+        $this->load->view($this->config->item('template') . '/survey/main_contents/edit_publish_response');
+        $this->load->view($this->config->item('template') . '/survey/footer/footer_dashboard');
     }
 
     public function survey_response_draft($survey_response_id = NULL) {
         $survey_id = $this->common_model->fetch_cell('tbl_survey_response', 'survey_fk_id', array('id' => $survey_response_id));
         $data['survey_question_data'] = $this->survey->get_published_response_feeds_by_args($survey_id, $survey_response_id, 'draft');
-        $this->load->view($this->config->item('template') . '/header_dashboard', $data);
-        $this->load->view($this->config->item('template') . '/survey/edit_publish_response');
-        $this->load->view($this->config->item('template') . '/footer_dashboard');
+        $this->load->view($this->config->item('template') . '/survey/header/header_dashboard', $data);
+        $this->load->view($this->config->item('template') . '/survey/main_contents/edit_publish_response');
+        $this->load->view($this->config->item('template') . '/survey/footer/footer_dashboard');
     }
 
 //    public function ajax_update_survey_response() {
