@@ -22,10 +22,10 @@ class Login extends CI_Controller {
 
                 redirect($this->config->item('admin_login_url') . '/dashboard');
             } else {
-                $customerId = $this->flexi_auth->get_user_id();
+                //$customerId = $this->flexi_auth->get_user_id();
                 //pr($customerId);die;
-                $this->cart->session_to_usercart($customerId);
-                $this->cart->session_to_user_cartItems($customerId);
+                //$this->cart->session_to_usercart($customerId);
+                //$this->cart->session_to_user_cartItems($customerId);
                 redirect('dashboard');
             }
         }

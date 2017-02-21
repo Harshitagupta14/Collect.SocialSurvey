@@ -5,6 +5,11 @@
 <link href="<?= $this->config->item('adminassets'); ?>global/plugins/typeahead/typeahead.css" rel="stylesheet" type="text/css" />
 <link href="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-modal/css/bootstrap-modal-bs3patch.css" rel="stylesheet" type="text/css" />
 <link href="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet" type="text/css" />
+<link href="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
+<link href="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+<link href="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
+<link href="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+<link href="<?= $this->config->item('adminassets') ?>/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
 <style>
     .question-active{background-color:#32c5d2;}
     .question-row{ margin-left: -12px; margin-right: -12px;}
@@ -270,6 +275,16 @@
             return create_response_subjective(id);
         } else if (question_type == "MULTIPLE CHOICE") {
             return create_response_multiple_choice(id);
+        } else if (question_type == "NUMERICAL") {
+            return create_response_numerical(id);
+        } else if (question_type == "DATE") {
+            return create_response_date(id);
+        } else if (question_type == "PHONE") {
+            return create_response_phone(id);
+        } else if (question_type == "EMAIL") {
+            return create_response_email(id);
+        } else {
+            return create_response_subjective(id);
         }
 
     }
@@ -311,7 +326,7 @@
         var modal_body_subjective_col = document.createElement('div');
         modal_body_subjective_col.className = 'col-md-12';
         var question_multiple_options = document.querySelector('#question_multiple_options_' + id).value;
-        question_multiple_options = question_multiple_options.split(",");
+        question_multiple_options = question_multiple_options.split("|");
         var question_limit_lower = document.querySelector('#question_limit_lower_' + id).value;
         var question_limit_upper = document.querySelector('#question_limit_upper_' + id).value;
         var modal_body_multiple_choice_checkbox_help_label = document.createElement('label');
@@ -338,6 +353,121 @@
         modal_body_subjective_col.appendChild(modal_body_multiple_choice_checkbox_help_label);
         modal_body_subjective_col.appendChild(modal_body_multiple_choice_checkbox_list_div);
         return modal_body_subjective_col;
+    }
+
+    function create_response_numerical(id) {
+
+        var modal_body_numerical_col = document.createElement('div');
+        modal_body_numerical_col.className = 'col-md-12';
+        var question_help_text = document.querySelector('#question_help_text_' + id).value;
+        var modal_body_numerical_content_label = document.createElement('label');
+        modal_body_numerical_content_label.innerHTML = question_help_text;
+        var modal_body_numerical_content = document.createElement('input');
+        modal_body_numerical_content.className = 'form-control';
+        modal_body_numerical_content.setAttribute('id', 'modal_response_' + id);
+        modal_body_numerical_content.setAttribute('type', 'number');
+        var upper_limit = document.querySelector('#question_limit_upper_' + id).value;
+        modal_body_numerical_content.setAttribute('maxlength', upper_limit);
+        modal_body_numerical_content.setAttribute('oninput', 'this.value = this.value.slice(0, this.maxLength)');
+        modal_body_numerical_content.setAttribute('placeholder', 'Enter Number , MaxLength ' + upper_limit + ' digit number. ');
+        modal_body_numerical_col.appendChild(modal_body_numerical_content_label);
+        modal_body_numerical_col.appendChild(modal_body_numerical_content);
+        return modal_body_numerical_col;
+    }
+
+    function create_response_phone(id) {
+
+        var modal_body_phone_col = document.createElement('div');
+        modal_body_phone_col.className = 'col-md-12';
+        var question_help_text = document.querySelector('#question_help_text_' + id).value;
+        var modal_body_phone_content_label = document.createElement('label');
+        modal_body_phone_content_label.innerHTML = question_help_text;
+        var modal_body_phone_content = document.createElement('input');
+        modal_body_phone_content.className = 'form-control';
+        modal_body_phone_content.setAttribute('id', 'modal_response_' + id);
+        modal_body_phone_content.setAttribute('type', 'number');
+        //var upper_limit = document.querySelector('#question_limit_upper_' + id).value;
+        //modal_body_phone_content.setAttribute('maxlength', upper_limit);
+        //modal_body_phone_content.setAttribute('oninput', 'this.value = this.value.slice(0, this.maxLength)');
+        modal_body_phone_content.setAttribute('placeholder', 'Enter Phone Number.');
+        modal_body_phone_col.appendChild(modal_body_phone_content_label);
+        modal_body_phone_col.appendChild(modal_body_phone_content);
+        return modal_body_phone_col;
+    }
+
+    function create_response_email(id) {
+
+        var modal_body_email_col = document.createElement('div');
+        modal_body_email_col.className = 'col-md-12';
+        var question_help_text = document.querySelector('#question_help_text_' + id).value;
+        var modal_body_email_content_label = document.createElement('label');
+        modal_body_email_content_label.innerHTML = question_help_text;
+
+        var modal_body_email_content = document.createElement('input');
+        modal_body_email_content.className = 'form-control';
+        modal_body_email_content.setAttribute('id', 'modal_response_' + id);
+        modal_body_email_content.setAttribute('type', 'text');
+        modal_body_email_content.setAttribute('oninput', 'validateEmail(' + id + ')');
+        modal_body_email_content.setAttribute('placeholder', 'Enter Email Address');
+        modal_body_email_content.setAttribute('value', '');
+
+
+
+        var modal_body_email_msg_error = document.createElement('span');
+        modal_body_email_msg_error.className = 'email-error';
+        modal_body_email_msg_error.setAttribute('id', 'email_error_' + id);
+        modal_body_email_msg_error.setAttribute('style', 'display: none; color:red;');
+        modal_body_email_msg_error.innerHTML = "Not a valid email address";
+
+        var modal_body_email_msg_success = document.createElement('span');
+        modal_body_email_msg_success.className = 'email-error';
+        modal_body_email_msg_success.setAttribute('id', 'email_success_' + id);
+        modal_body_email_msg_success.setAttribute('style', 'display: none; color:green;');
+        modal_body_email_msg_success.innerHTML = "A valid email address!";
+
+
+        var modal_body_email_check = document.createElement('input');
+        modal_body_email_check.setAttribute('id', 'modal_email_check_' + id);
+        modal_body_email_check.setAttribute('type', 'hidden');
+        modal_body_email_check.setAttribute('value', 'wrong');
+
+        modal_body_email_col.appendChild(modal_body_email_content_label);
+        modal_body_email_col.appendChild(modal_body_email_content);
+        modal_body_email_col.appendChild(modal_body_email_msg_error);
+        modal_body_email_col.appendChild(modal_body_email_msg_success);
+        modal_body_email_col.appendChild(modal_body_email_check);
+        return modal_body_email_col;
+    }
+
+    function create_response_date(id) {
+        var modal_body_time_col = document.createElement('div');
+        modal_body_time_col.className = 'col-md-12';
+        var question_help_text = document.querySelector('#question_help_text_' + id).value;
+        var modal_body_time_content_label = document.createElement('label');
+        modal_body_time_content_label.innerHTML = question_help_text;
+        var modal_body_time_input_group_col = document.createElement('div');
+        modal_body_time_input_group_col.className = 'input-group';
+        var modal_body_time_content = document.createElement('input');
+        modal_body_time_content.className = 'form-control timepicker timepicker-no-seconds';
+        modal_body_time_content.setAttribute('id', 'modal_response_' + id);
+        modal_body_time_content.setAttribute('type', 'text');
+        var modal_body_time_span_col = document.createElement('span');
+        modal_body_time_span_col.className = 'input-group-btn';
+        var modal_body_time_button_col = document.createElement('button');
+        modal_body_time_button_col.className = 'btn default';
+        modal_body_time_button_col.setAttribute('type', 'button');
+        var modal_body_time_icon_col = document.createElement('i');
+        modal_body_time_icon_col.className = 'fa fa-clock-o';
+
+        modal_body_time_button_col.appendChild(modal_body_time_icon_col);
+        modal_body_time_span_col.appendChild(modal_body_time_button_col);
+        modal_body_time_input_group_col.appendChild(modal_body_time_content);
+        modal_body_time_input_group_col.appendChild(modal_body_time_span_col);
+
+
+        modal_body_time_col.appendChild(modal_body_time_content_label);
+        modal_body_time_col.appendChild(modal_body_time_input_group_col);
+        return modal_body_time_col;
     }
 
     function multiple_choice_restriction(id, upperlimit) {
@@ -373,8 +503,20 @@
                 response.join('|');
             });
             document.querySelector('#response_' + id).value = response;
+        } else if (question_type == "NUMERICAL") {
+            var response = document.querySelector('#modal_response_' + id).value;
+            document.querySelector('#response_' + id).value = response;
+        } else if (question_type == "PHONE") {
+            var response = document.querySelector('#modal_response_' + id).value;
+            document.querySelector('#response_' + id).value = response;
+        } else if (question_type == "EMAIL") {
+            var modal_email_check = document.querySelector('#modal_email_check_' + id);
+            var response = document.querySelector('#modal_response_' + id).value;
+            if (modal_email_check.value == 'correct' && modal_email_check.value != '') {
+                document.querySelector('#response_' + id).value = response;
+            }
         }
-        if (response != '') {
+        if (response != "undefined" && response != '') {
             document.querySelector('#question_' + id + '_badge').className = 'badge badge-success';
         } else {
             display_error("Empty Response , Unable to Save.");
@@ -447,5 +589,37 @@
             }
         }
         return valid;
+    }
+
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            display_error("ONLY NUMBERS ARE ALLOWED");
+            return false;
+        }
+        return true;
+    }
+
+    function validateEmail(id)
+    {
+        var enteredEmail = document.querySelector('#modal_response_' + id).value;
+        var email_success = document.querySelector('#email_success_' + id);
+        var email_error = document.querySelector('#email_error_' + id);
+        var modal_email_check = document.querySelector('#modal_email_check_' + id);
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (re.test(enteredEmail)) {
+            modal_email_check.setAttribute('value', 'correct');
+            email_error.style.display = 'none';
+            email_success.style.display = 'block';
+            return true;
+        }
+        else
+        {
+            modal_email_check.setAttribute('value', 'wrong');
+            email_error.style.display = 'block';
+            email_success.style.display = 'none';
+            return false;
+        }
     }
 </script>

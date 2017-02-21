@@ -76,7 +76,6 @@ $config['database']['user_acc']['columns']['failed_login_ip'] = 'uacc_fail_login
 $config['database']['user_acc']['columns']['failed_login_ban_date'] = 'uacc_date_fail_login_ban';
 $config['database']['user_acc']['columns']['last_login_date'] = 'uacc_date_last_login';
 $config['database']['user_acc']['columns']['date_added'] = 'uacc_date_added';
-$config['database']['user_acc']['columns']['active'] = 'uacc_active';
 
 // Custom columns can be added to the main user account table to enable library functions to handle additional custom data stored within the table.
 $config['database']['user_acc']['custom_columns'] = array(
@@ -281,7 +280,7 @@ $config['database']['settings']['date_time'] = date('Y-m-d H:i:s');
  * Auth Session Name
  * Set the root auth session name saved as an array in the CI session, all other flexi auth session data is then stored within this array.
  */
-$config['sessions']['name'] = 'SofaByFancy_Sessions';
+$config['sessions']['name'] = 'Collect_SocialSurvey_Sessions';
 
 /**
  * Primary User Indentifier Session

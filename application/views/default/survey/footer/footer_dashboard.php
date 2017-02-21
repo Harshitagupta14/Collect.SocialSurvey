@@ -71,5 +71,12 @@
 <script src="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-modal/js/bootstrap-modalmanager.js" type="text/javascript"></script>
 <script src="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-modal/js/bootstrap-modal.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
+<script src="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
+<script src="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+<script src="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js" type="text/javascript"></script>
+<script src="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="<?= $this->config->item('adminassets') ?>/global/plugins/clockface/js/clockface.js" type="text/javascript"></script>
+<script src="<?= $this->config->item('adminassets') ?>/global/scripts/app.min.js" type="text/javascript"></script>
+<script src="<?= $this->config->item('adminassets') ?>/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
 
 </html>

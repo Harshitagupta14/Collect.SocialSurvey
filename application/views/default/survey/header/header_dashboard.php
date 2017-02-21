@@ -42,6 +42,64 @@
         <script>
             var baseurl = '<?= base_url() ?>';
         </script>
+        <style>
+            .mdl-snackbar {
+                border-radius: 2px;
+                max-width: 568px;
+                min-width: 288px;
+                transform: translate(-50%, 80px);
+            }
+            .mdl-snackbar{
+                background-color: #323232;
+                bottom: 0;
+                cursor: default;
+                display: flex;
+                font-family: "Roboto","Helvetica","Arial",sans-serif;
+                justify-content: space-between;
+                left: 40%;
+                pointer-events: none;
+                position: fixed;
+                transform: translate(0px, 80px);
+                transition: transform 0.25s cubic-bezier(0.4, 0, 1, 1) 0s;
+                will-change: transform;
+                z-index: 3;
+            }
+            .mdl-snackbar__text {
+                color: white;
+                float: left;
+                padding: 14px 12px 14px 24px;
+                vertical-align: middle;
+            }
+            .mdl-snackbar--active {
+                pointer-events: auto;
+                transform: translate(0px, 0px);
+                transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1) 0s;
+            }
+            .mdl-snackbar--active {
+                //transform: translate(-50%, 0px);
+            }
+            .mdl-snackbar__action {
+                align-self: center;
+                background: transparent none repeat scroll 0 0;
+                border: medium none;
+                color: rgb(244, 67, 54);
+                cursor: pointer;
+                float: right;
+                font-family: "Roboto","Helvetica","Arial",sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                letter-spacing: 0;
+                line-height: 1;
+                opacity: 0;
+                outline: medium none;
+                overflow: hidden;
+                padding: 14px 24px 14px 12px;
+                pointer-events: none;
+                text-align: center;
+                text-decoration: none;
+                text-transform: uppercase;
+            }
+        </style>
     </head>
     <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-md"  id="scrollable_container">
         <!-- BEGIN HEADER -->
