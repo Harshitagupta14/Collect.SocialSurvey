@@ -129,6 +129,7 @@ $route['draft-response'] = 'survey/draft_response/';
 $route['survey-response-published/(:any)'] = 'survey/survey_response_published/$1';
 $route['survey-response-draft/(:any)'] = 'survey/survey_response_draft/$1';
 $route['ajax-publish-survey-response'] = 'survey/ajax_publish_survey_response/';
+$route['ajax-upload-media'] = 'survey/ajax_upload_media/';
 
 
 

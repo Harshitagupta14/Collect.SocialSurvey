@@ -15,33 +15,30 @@
         <link href="<?= $this->config->item('adminassets'); ?>global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="<?= $this->config->item('adminassets'); ?>global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
         <link href="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
-        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
-        <!-- END GLOBAL MANDATORY STYLES -->
-        <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
-        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/morris/morris.css" rel="stylesheet" type="text/css" />
-        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
-        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
-        <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN THEME GLOBAL STYLES -->
         <link href="<?= $this->config->item('adminassets'); ?>global/css/components-md.min.css" rel="stylesheet" id="style_components" type="text/css" />
         <link href="<?= $this->config->item('adminassets'); ?>global/css/plugins-md.min.css" rel="stylesheet" type="text/css" />
-        <!-- END THEME GLOBAL STYLES -->
-        <!-- BEGIN THEME LAYOUT STYLES -->
         <link href="<?= $this->config->item('adminassets'); ?>layouts/layout2/css/layout.min.css" rel="stylesheet" type="text/css" />
         <link href="<?= $this->config->item('adminassets'); ?>layouts/layout2/css/themes/blue.min.css" rel="stylesheet" type="text/css" id="style_color" />
         <link href="<?= $this->config->item('adminassets'); ?>layouts/layout2/css/custom.min.css" rel="stylesheet" type="text/css" />
         <!-- END THEME LAYOUT STYLES -->
         <script src="<?= $this->config->item('adminassets'); ?>global/plugins/jquery.min.js" type="text/javascript"></script>
-
         <link rel="shortcut icon" href="favicon.ico" />
 
-        <!-- END HEAD -->
-        <script>
-            var baseurl = '<?= base_url() ?>';
-        </script>
+        <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet" type="text/css" />
+        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/typeahead/typeahead.css" rel="stylesheet" type="text/css" />
+        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-modal/css/bootstrap-modal-bs3patch.css" rel="stylesheet" type="text/css" />
+        <link href="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet" type="text/css" />
+        <link href="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+        <link href="<?= $this->config->item('adminassets') ?>/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
+        <link href="<?= $this->config->item('adminassets') ?>/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"></script>
         <style>
             .mdl-snackbar {
                 border-radius: 2px;
@@ -99,7 +96,58 @@
                 text-decoration: none;
                 text-transform: uppercase;
             }
+            .question-active{background-color:#32c5d2;}
+            .question-row{ margin-left: -12px; margin-right: -12px;}
+            .question-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                background-color: rgba(0,0,0,0.1);
+                z-index: 100001;
+                display:none;
+            }
+            .question-modal {
+                width: 300px;
+                height: 200px;
+                line-height: 200px;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                margin-top: -100px;
+                margin-left: -150px;
+                background-color: #46545f;
+                border-radius: 5px;
+                text-align: center;
+                z-index: 11;
+                display:none;/* 1px higher than the overlay layer */
+            }
+            .question-required-label:after {
+                content:"*";
+                color:red;
+                float:right;
+                margin-top:10px;
+            }
+            .overflow{overflow:auto !important;}
+            .question-response-actions{
+                padding: 2px;
+                text-align: center;
+                position: fixed;
+                width:100%;
+                right:0px;
+                bottom:0px;
+                display: block;
+                z-index:10001;
+                background-color: rgb(255, 255, 255);
+            }
+            @media screen and (min-width: 1024px) {
+                .question-response-actions{ width: calc(100% - 196px); }
+            }
         </style>
+        <script>
+            var baseurl = '<?= base_url() ?>';
+        </script>
     </head>
     <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-md"  id="scrollable_container">
         <!-- BEGIN HEADER -->

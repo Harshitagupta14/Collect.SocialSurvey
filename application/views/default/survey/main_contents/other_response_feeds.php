@@ -1,63 +1,3 @@
-<!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="<?= $this->config->item('adminassets'); ?>global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
-<link href="<?= $this->config->item('adminassets'); ?>global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
-<link href="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet" type="text/css" />
-<link href="<?= $this->config->item('adminassets'); ?>global/plugins/typeahead/typeahead.css" rel="stylesheet" type="text/css" />
-<link href="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-modal/css/bootstrap-modal-bs3patch.css" rel="stylesheet" type="text/css" />
-<link href="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet" type="text/css" />
-<style>
-    .question-active{background-color:#32c5d2;}
-    .question-row{ margin-left: -12px; margin-right: -12px;}
-</style>
-<style>
-    .question-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        background-color: rgba(0,0,0,0.1);
-        z-index: 100001;
-        display:none;
-    }
-    .question-modal {
-        width: 300px;
-        height: 200px;
-        line-height: 200px;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        margin-top: -100px;
-        margin-left: -150px;
-        background-color: #46545f;
-        border-radius: 5px;
-        text-align: center;
-        z-index: 11;
-        display:none;/* 1px higher than the overlay layer */
-    }
-    .question-required-label:after {
-        content:"*";
-        color:red;
-        float:right;
-        margin-top:10px;
-    }
-    .overflow{overflow:auto !important;}
-    .question-response-actions{
-        padding: 2px;
-        text-align: center;
-        position: fixed;
-        width:100%;
-        right:0px;
-        bottom:0px;
-        display: block;
-        z-index:10001;
-        background-color: rgb(255, 255, 255);
-    }
-    @media screen and (min-width: 1024px) {
-        .question-response-actions{ width: calc(100% - 196px); }
-    }
-</style>
-<!-- END PAGE LEVEL PLUGINS -->
 
 <div class="page-content-wrapper">
     <div class="page-content overflow">
@@ -112,7 +52,7 @@
                 ?>
                 <div class="col-md-4">No Response Data Found.</div>
 
-<?php } ?>
+            <?php } ?>
         </div>
 
     </div>
@@ -121,37 +61,6 @@
     </div>
 </div>
 
-
-<script>
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            //alert(input.id);
-            reader.onload = function (e) {
-                $('#' + input.id + '_preview').attr('src', e.target.result);
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-</script>
-<!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="<?= $this->config->item('adminassets'); ?>global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
-<script src="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js" type="text/javascript"></script>
-<script src="<?= $this->config->item('adminassets'); ?>global/plugins/typeahead/handlebars.min.js" type="text/javascript"></script>
-<script src="<?= $this->config->item('adminassets'); ?>global/plugins/typeahead/typeahead.bundle.min.js" type="text/javascript"></script>
-<script src="https://code.getmdl.io/1.1.3/material.min.js"></script>
-<script type="text/javascript">
-    function display_error(error_message) { //common function for displayinga ll the error
-        'use strict';
-        var snackbarContainer = document.querySelector('#toast-notify');
-        'use strict';
-        var data = {message: error_message};
-        snackbarContainer.MaterialSnackbar.showSnackbar(data);
-    }
-</script>
-<div id="modals">
-
-</div>
 <script>
 
     function create_modal(id, question_type) {

@@ -27,7 +27,7 @@
                     <div class="row" id="survey_container">
                         <?php
                         foreach ($survey_feeds as $survey) {
-                            $survey['response_count'] = $this->common_model->num_rows('tbl_survey_response', array('survey_fk_id' => $survey['id']));
+                            //$survey['response_count'] = $this->common_model->num_rows('tbl_survey_response', array('survey_fk_id' => $survey['id']));
                             ?>
                             <div class="col-md-4" data-survey-id="<?php echo $survey['survey_id']; ?>">
                                 <!-- BEGIN Portlet PORTLET-->

@@ -67,6 +67,7 @@ class Survey extends CI_Controller {
             for ($i = 1; $i <= $survey_total_question; $i++) {
                 $data_question_response[$i]['survey_res_fk_id'] = $id;
                 $data_question_response[$i]['question_no'] = $i;
+                $data_question_response[$i]['question_type'] = $this->input->post('question_type_' . $i);
                 $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
                 $data_question_response[$i]['add_time'] = date('Y-m-d H:i:s');
             }
@@ -79,6 +80,7 @@ class Survey extends CI_Controller {
             for ($i = 1; $i <= $survey_total_question; $i++) {
                 $data_question_response[$i]['id'] = $this->input->post('question_response_id_' . $i);
                 $data_question_response[$i]['question_no'] = $i;
+                $data_question_response[$i]['question_type'] = $this->input->post('question_type_' . $i);
                 $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
                 $data_question_response[$i]['modify_time'] = date('Y-m-d H:i:s');
             }
@@ -91,6 +93,7 @@ class Survey extends CI_Controller {
             for ($i = 1; $i <= $survey_total_question; $i++) {
                 $data_question_response[$i]['survey_res_fk_id'] = $id;
                 $data_question_response[$i]['question_no'] = $i;
+                $data_question_response[$i]['question_type'] = $this->input->post('question_type_' . $i);
                 $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
                 $data_question_response[$i]['add_time'] = date('Y-m-d H:i:s');
             }
@@ -103,6 +106,7 @@ class Survey extends CI_Controller {
             for ($i = 1; $i <= $survey_total_question; $i++) {
                 $data_question_response[$i]['id'] = $this->input->post('question_response_id_' . $i);
                 $data_question_response[$i]['question_no'] = $i;
+                $data_question_response[$i]['question_type'] = $this->input->post('question_type_' . $i);
                 $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
                 $data_question_response[$i]['modify_time'] = date('Y-m-d H:i:s');
             }
@@ -218,4 +222,43 @@ class Survey extends CI_Controller {
 //        echo json_encode($data);
 //        die;
 //    }
+
+    public function ajax_upload_media() {
+        if ($this->input->post('label') == 'MEDIAIMAGEUPLOAD') {
+            $id = $this->input->post('response_id');
+            $_FILES['mediaFile']['name'] = time() . $_FILES['mediaFile']['name']; //Changing FIlename
+            if (!empty($_FILES)) {
+                $config['upload_path'] = 'assets/uploads/response_images';
+                $config['allowed_types'] = 'gif|jpg|png|jpeg';
+                $this->load->library('upload', $config);
+                if ($_FILES['mediaFile']['name'] != '') {
+                    if (!$this->upload->do_upload('mediaFile')) {
+                        $data['error'] = array('error' => $this->upload->display_errors());
+                        $data['success'] = 'false';
+                    } else {
+                        $fileData = $this->upload->data();
+                        $data['file_name'] = $fileData['file_name'];
+                        $data['full_path'] = $fileData['full_path'];
+                        $data['success'] = 'true';
+                        $file_name = 'file_name' . $id;
+                        $full_path = 'full_path' . $id;
+                        if ($this->session->userdata($file_name)) {
+                            $this->session->unset_userdata($file_name);
+                            $this->session->unset_userdata($full_path);
+                        }
+                        if ($id != '') {
+                            $this->session->set_userdata('file_name1', $data['file_name']);
+                            $this->session->set_userdata('full_path1', $data['full_path']);
+                            $data['session_filename'] = $this->session->userdata('file_name1');
+                            $data['session_filename_no'] = $file_name;
+                            //$this->apply->add_bank_statement($data['file_name'], $data['full_path'], $id, $app_id);
+                        }
+                    }
+                }
+                echo json_encode($data);
+                die;
+            }
+        }
+    }
+
 }
