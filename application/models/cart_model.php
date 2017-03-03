@@ -208,14 +208,14 @@ class Cart_Model extends CI_Model {
         //pr($data);
         if ($data['cart_id']) {
             $this->db->where('cart_id', $data['cart_id']);
-            $this->db->update($this->tableCart);
+            $response = $this->db->update($this->tableCart);
         } else {
 
             $this->db->insert($this->tableCart);
             $response = $this->db->insert_id();
-            echo $this->db->last_query();
-            return $response;
+            //echo $this->db->last_query();
         }
+        return $response;
     }
 
     public function getCartDetail() {

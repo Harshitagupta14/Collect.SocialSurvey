@@ -1,3 +1,8 @@
+
+
+
+
+
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <script src="<?= $this->config->item('adminassets'); ?>global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
 <script src="<?= $this->config->item('adminassets'); ?>global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js" type="text/javascript"></script>
@@ -361,14 +366,7 @@
     }
 
     function create_response_picture(id) {
-        var media_id = document.querySelector('#response_media_fk_id' + id).value;
-        var media_name = document.querySelector('#response_' + id).value;
-        var fill_media_src = '<?php echo $this->config->item('uploads'); ?>response_images/' + media_name;
-        if (media_name != '') {
-            var media_src = "<img src='" + fill_media_src + "' alt='' />";
-        } else {
-            media_src = "<img src='http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image' alt='' />";
-        }
+
         //var modal_body_picture_col = document.createElement('div');
         var modal_body_picture_col = document.createElement('div');
         modal_body_picture_col.className = 'col-md-12';
@@ -380,12 +378,9 @@
         modal_body_picture_col.innerHTML = "<form enctype='multipart/form-data' method='post' id='mediaForm" + id + "'><div class='col-md-9'>" +
                 "<div class='fileinput fileinput-new' data-provides='fileinput'>" +
                 "<div class='fileinput-new thumbnail' style='width: 200px; height: 150px;'>" +
-                media_src + "</div>" +
+                "<img src='http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image' alt='' /> </div>" +
                 "<div class='fileinput-preview fileinput-exists thumbnail' style='max-width: 200px; max-height: 150px;'> </div>" +
                 "<div>" +
-                "<input type='hidden' id='media_insert_id" + id + "' value='" + media_id + "' hidden>" +
-                "<input type='hidden' id='media_session_id" + id + "' value=''  hidden>" +
-                "<input type='hidden' id='media_file_name" + id + "' value=''  hidden>" +
                 "<span class='btn default btn-file'>" +
                 "<span class='fileinput-new'> Select image </span>" +
                 "<span class='fileinput-exists'> <i class='glyphicon glyphicon-folder-open'></i> Change </span>" +
@@ -396,13 +391,40 @@
                 "</form>" +
                 "<div class='col-xs-12 col-sm-12 col-md-offset-1 col-md-10' id='media_uploading_icon_" + id + "' style='display:none;'>"
                 + "<img class='img-responsive' src='https://media.giphy.com/media/hA9LnXzyZTxmg/giphy.gif'></div>";
-
-
         return modal_body_picture_col;
     }
+    /**
+     function create_response_audio(id) {
 
+     var modal_body_auido_col = document.createElement('div');
+     modal_body_auido_col.className = 'col-md-12';
+     var question_help_text = document.querySelector('#question_help_text_' + id).value;
+     var modal_body_audio_content_label = document.createElement('label');
+     modal_body_audio_content_label.innerHTML = question_help_text;
+     modal_body_auido_col.appendChild(modal_body_audio_content_label);
+     modal_body_auido_col.innerHTML = "<form enctype='multipart/form-data' method='post' id='mediaForm" + id + "'>"
+     + "<div id='gUMArea' ><div><input type='radio' name='media' value='video' id='mediaVideo'  hidden>"
+     + "<input type='radio' name='media' value='audio' checked='' hidden>"
+     + "</div>"
+     + "<button class='btn btn-default' onclick='recordaudio(" + id + ")'  type='button' >Initialize Audio</button>"
+     + "</div>"
+     + "<div id='btns'>"
+     + "<button  class='btn btn-default' type='button' id='start'>Start</button>"
+     + "<button  class='btn btn-default' type='button' id='stop'>Stop</button>"
+     + "</div> <div>"
+     + "<ul class='list-unstyled' id='ul'></ul>"
+     + "</div>"
+     + "</div>"
+     + "<div class='col-xs-12 col-sm-12 col-md-offset-1 col-md-10' id='media_uploading_icon_" + id + "' style='display:none;'>"
+     + "<img class='img-responsive' src='https://media.giphy.com/media/hA9LnXzyZTxmg/giphy.gif'></div>";
+     var script = document.createElement('script');
+     script.setAttribute('src', '<?php echo $this->config->item('frontassets'); ?>js/audio/recorder.js');
+     modal_body_auido_col.appendChild(script);
+     return modal_body_auido_col;
+     }
+     */
     function create_response_audio(id) {
-        var media_id = document.querySelector('#response_media_fk_id' + id).value;
+
         var modal_body_auido_col = document.createElement('div');
         modal_body_auido_col.className = 'col-md-12';
         var question_help_text = document.querySelector('#question_help_text_' + id).value;
@@ -410,28 +432,38 @@
         modal_body_audio_content_label.innerHTML = question_help_text;
         modal_body_auido_col.appendChild(modal_body_audio_content_label);
         modal_body_auido_col.innerHTML = "<form enctype='multipart/form-data' method='post' id='mediaForm" + id + "'>"
-                + "<div id='gUMArea' ><div><input type='radio' name='media' value='video' id='mediaVideo'  hidden>"
-                + "<input type='radio' name='media' value='audio' checked='' hidden>"
+                + "<section class='experiment' id='recordrtc_" + id + "'>"
+                + "<h2 class='header'>"
+                + "<select id='recording-media_" + id + "'> "
+                + "<option value='record-audio'>Audio</option>"
+                + "</select>"
+                + "<select id='media-container-format_" + id + "'> "
+                + "<option>WebM</option>"
+                + "</select>"
+
+                + "<button id='record_btn_" + id + "' onclick='record(" + id + ");' type='button'>Start Recording</button>"
+                + "</h2>"
+
+                + "<div style='text-align: center; display: none;'>"
+                + "<button id='upload-to-server_" + id + "' type='button'>Upload To Server</button>"
                 + "</div>"
-                + "<input type='hidden' id='media_insert_id" + id + "' value='" + media_id + "'  hidden>"
-                + "<input type='hidden' id='media_session_id" + id + "' value=''  hidden>"
-                + "<input type='hidden' id='media_file_name" + id + "' value=''  hidden>"
-                + "<button class='btn btn-default' onclick='recordaudio(" + id + ")'  type='button' >Initialize Audio</button>"
-                + "</div>"
-                + "<div id='btns'>"
-                + "<button  class='btn btn-default' type='button' id='start'>Start</button>"
-                + "<button  class='btn btn-default' type='button' id='stop'>Stop</button>"
-                + "</div> <div>"
-                + "<ul class='list-unstyled' id='ul' style='margin-top:20px;'></ul>"
-                + "</div>"
-                + "</div></form>"
+
+                + "<br>"
+
+                + "<video controls muted></video>"
+                + "</section>"
+                + "<button class='btn btn-default' id='record_btn_" + id + "' type='button' >Start Recording Audio</button>"
                 + "<div class='col-xs-12 col-sm-12 col-md-offset-1 col-md-10' id='media_uploading_icon_" + id + "' style='display:none;'>"
                 + "<img class='img-responsive' src='https://media.giphy.com/media/hA9LnXzyZTxmg/giphy.gif'></div>";
         var script = document.createElement('script');
-        script.setAttribute('src', '<?php echo $this->config->item('frontassets'); ?>js/audio/recorder.js');
+        script.setAttribute('src', 'https://cdn.webrtc-experiment.com/RecordRTC.js');
+        var script1 = document.createElement('script');
+        script1.setAttribute('src', 'https://cdn.webrtc-experiment.com/gumadapter.js');
         modal_body_auido_col.appendChild(script);
+        modal_body_auido_col.appendChild(script1);
         return modal_body_auido_col;
     }
+
 
     function create_response_scale(id) {
         var modal_body_scale_col = document.createElement('div');
@@ -511,17 +543,6 @@
         } else if (question_type == "TIME") {
             var response = document.querySelector('#modal_response_' + id).value;
             document.querySelector('#response_' + id).value = response;
-        } else if (question_type == "AUDIO INPUT") {
-            var response = document.querySelector('#media_file_name' + id).value;
-            var media_id = document.querySelector('#media_insert_id' + id).value;
-            document.querySelector('#response_' + id).value = response;
-            document.querySelector('#response_media_fk_id' + id).value = media_id;
-        }
-        else if (question_type == "PICTURE/CAMERA INPUT") {
-            var response = document.querySelector('#media_file_name' + id).value;
-            var media_id = document.querySelector('#media_insert_id' + id).value;
-            document.querySelector('#response_' + id).value = response;
-            document.querySelector('#response_media_fk_id' + id).value = media_id;
         }
         if (response != "undefined" && response != '') {
             document.querySelector('#question_' + id + '_badge').className = 'badge badge-success';
@@ -636,7 +657,6 @@
         $formData.append('response_id', id);
         $formData.append('survey_id', document.getElementById('survey_id').value);
         $formData.append("label", "MEDIAIMAGEUPLOAD");
-        $formData.append('media_insert_id', document.getElementById('media_insert_id' + id).value);
         //var fd = new FormData(document.getElementById("mediaForm" + id));
         //fd.append('response_id', id);
         //fd.append("label", "MEDIAIMAGEUPLOAD");
@@ -657,16 +677,12 @@
                 document.getElementById('mediaForm' + id).style.display = 'none';
                 document.getElementById('media_uploading_icon_' + id).style.display = 'block';
             },
-            success: function (stat)
+            complete: function (data)
             {
-                var data = JSON.parse(stat);
-                if (data.media_insert_id != true) {
-                    document.getElementById('media_insert_id' + id).value = data.media_insert_id;
-                }
-                document.getElementById('media_file_name' + id).value = data.media_file_name;
-                document.getElementById('media_session_id' + id).value = data.media_session_id;
                 document.getElementById('mediaForm' + id).style.display = 'block';
                 document.getElementById('media_uploading_icon_' + id).style.display = 'none';
+                var result = JSON.parse(data.responseText);
+                console.log(result);
             }
         });
     }
@@ -678,7 +694,6 @@
         data.append('mediaFile', blob);
         data.append('response_id', id);
         data.append('survey_id', document.getElementById('survey_id').value);
-        data.append('media_insert_id', document.getElementById('media_insert_id' + id).value);
         data.append("label", "MEDIAAUDIOUPLOAD");
         ajax_audio_upload(data, id);
     }
@@ -696,17 +711,12 @@
                 document.getElementById('mediaForm' + id).style.display = 'none';
                 document.getElementById('media_uploading_icon_' + id).style.display = 'block';
             },
-            success: function (stat)
+            complete: function (data)
             {
-                var data = JSON.parse(stat);
-                if (data.media_insert_id != true) {
-                    document.getElementById('media_insert_id' + id).value = data.media_insert_id;
-                }
-                document.getElementById('media_file_name' + id).value = data.media_file_name;
-                document.getElementById('media_session_id' + id).value = data.media_session_id;
                 document.getElementById('mediaForm' + id).style.display = 'block';
                 document.getElementById('media_uploading_icon_' + id).style.display = 'none';
-                document.getElementById('audio_upload_btn_' + id).style.display = 'none';
+                var result = JSON.parse(data.responseText);
+                console.log(result);
             }
         });
     }
@@ -753,9 +763,589 @@
     }
 </script>
 
-<style>
-    #btns{
-        display: none;
+
+
+
+
+<script>
+    (function () {
+        var params = {},
+                r = /([^&=]+)=?([^&]*)/g;
+        function d(s) {
+            return decodeURIComponent(s.replace(/\+/g, ' '));
+        }
+
+        var match, search = window.location.search;
+        while (match = r.exec(search.substring(1))) {
+            params[d(match[1])] = d(match[2]);
+            if (d(match[2]) === 'true' || d(match[2]) === 'false') {
+                params[d(match[1])] = d(match[2]) === 'true' ? true : false;
+            }
+        }
+
+        window.params = params;
+    })();</script>
+
+
+<script>
+
+    function record(id) {
+        alert(id);
+        var recordingDIV = document.querySelector('#recordrtc_' + id);
+        var recordingMedia = recordingDIV.querySelector('#recording-media_' + id);
+        var recordingPlayer = recordingDIV.querySelector('video');
+        var mediaContainerFormat = recordingDIV.querySelector('#media-container-format_' + id);
+        var button = recordingDIV.querySelector('#record_btn_' + id);
+        if (button.innerHTML === 'Stop Recording') {
+            button.disabled = true;
+            button.disableStateWaiting = true;
+            setTimeout(function () {
+                button.disabled = false;
+                button.disableStateWaiting = false;
+            }, 2 * 1000);
+            button.innerHTML = 'Star Recording';
+            function stopStream() {
+                if (button.stream && button.stream.stop) {
+                    button.stream.stop();
+                    button.stream = null;
+                }
+            }
+
+            if (button.recordRTC) {
+                if (button.recordRTC.length) {
+                    button.recordRTC[0].stopRecording(function (url) {
+                        if (!button.recordRTC[1]) {
+                            button.recordingEndedCallback(url);
+                            stopStream();
+                            saveToDiskOrOpenNewTab(button.recordRTC[0], id);
+                            return;
+                        }
+
+                        button.recordRTC[1].stopRecording(function (url) {
+                            button.recordingEndedCallback(url);
+                            stopStream();
+                        });
+                    });
+                }
+                else {
+                    button.recordRTC.stopRecording(function (url) {
+                        button.recordingEndedCallback(url);
+                        stopStream();
+                        saveToDiskOrOpenNewTab(button.recordRTC, id);
+                    });
+                }
+            }
+
+            return;
+        }
+
+        button.disabled = true;
+        var commonConfig = {
+            onMediaCaptured: function (stream) {
+                button.stream = stream;
+                if (button.mediaCapturedCallback) {
+                    button.mediaCapturedCallback();
+                }
+
+                button.innerHTML = 'Stop Recording';
+                button.disabled = false;
+            },
+            onMediaStopped: function () {
+                button.innerHTML = 'Start Recording';
+                if (!button.disableStateWaiting) {
+                    button.disabled = false;
+                }
+            },
+            onMediaCapturingFailed: function (error) {
+                if (error.name === 'PermissionDeniedError' && !!navigator.mozGetUserMedia) {
+                    InstallTrigger.install({
+                        'Foo': {
+                            // https://addons.mozilla.org/firefox/downloads/latest/655146/addon-655146-latest.xpi?src=dp-btn-primary
+                            URL: 'https://addons.mozilla.org/en-US/firefox/addon/enable-screen-capturing/',
+                            toString: function () {
+                                return this.URL;
+                            }
+                        }
+                    });
+                }
+
+                commonConfig.onMediaStopped();
+            }
+        };
+        if (recordingMedia.value === 'record-video') {
+            captureVideo(commonConfig);
+            button.mediaCapturedCallback = function () {
+                button.recordRTC = RecordRTC(button.stream, {
+                    type: mediaContainerFormat.value === 'Gif' ? 'gif' : 'video',
+                    disableLogs: params.disableLogs || false,
+                    canvas: {
+                        width: params.canvas_width || 320,
+                        height: params.canvas_height || 240
+                    },
+                    frameInterval: typeof params.frameInterval !== 'undefined' ? parseInt(params.frameInterval) : 20 // minimum time between pushing frames to Whammy (in milliseconds)
+                });
+                button.recordingEndedCallback = function (url) {
+                    recordingPlayer.src = null;
+                    recordingPlayer.srcObject = null;
+                    if (mediaContainerFormat.value === 'Gif') {
+                        recordingPlayer.pause();
+                        recordingPlayer.poster = url;
+                        recordingPlayer.onended = function () {
+                            recordingPlayer.pause();
+                            recordingPlayer.poster = URL.createObjectURL(button.recordRTC.blob);
+                        };
+                        return;
+                    }
+
+                    recordingPlayer.src = url;
+                    recordingPlayer.play();
+                    recordingPlayer.onended = function () {
+                        recordingPlayer.pause();
+                        recordingPlayer.src = URL.createObjectURL(button.recordRTC.blob);
+                    };
+                };
+                button.recordRTC.startRecording();
+            };
+        }
+
+        if (recordingMedia.value === 'record-audio') {
+            captureAudio(commonConfig, id);
+            button.mediaCapturedCallback = function () {
+                button.recordRTC = RecordRTC(button.stream, {
+                    type: 'audio',
+                    bufferSize: typeof params.bufferSize == 'undefined' ? 0 : parseInt(params.bufferSize),
+                    sampleRate: typeof params.sampleRate == 'undefined' ? 44100 : parseInt(params.sampleRate),
+                    leftChannel: params.leftChannel || false,
+                    disableLogs: params.disableLogs || false,
+                    recorderType: webrtcDetectedBrowser === 'edge' ? StereoAudioRecorder : null
+                });
+                button.recordingEndedCallback = function (url) {
+                    var audio = new Audio();
+                    audio.src = url;
+                    audio.controls = true;
+                    recordingPlayer.parentNode.appendChild(document.createElement('hr'));
+                    recordingPlayer.parentNode.appendChild(audio);
+                    if (audio.paused)
+                        audio.play();
+                    audio.onended = function () {
+                        audio.pause();
+                        audio.src = URL.createObjectURL(button.recordRTC.blob);
+                    };
+                };
+                button.recordRTC.startRecording();
+            };
+        }
+
+        if (recordingMedia.value === 'record-audio-plus-video') {
+            captureAudioPlusVideo(commonConfig);
+            button.mediaCapturedCallback = function () {
+
+                if (webrtcDetectedBrowser !== 'firefox') { // opera or chrome etc.
+                    button.recordRTC = [];
+                    if (!params.bufferSize) {
+                        // it fixes audio issues whilst recording 720p
+                        params.bufferSize = 16384;
+                    }
+
+                    var audioRecorder = RecordRTC(button.stream, {
+                        type: 'audio',
+                        bufferSize: typeof params.bufferSize == 'undefined' ? 0 : parseInt(params.bufferSize),
+                        sampleRate: typeof params.sampleRate == 'undefined' ? 44100 : parseInt(params.sampleRate),
+                        leftChannel: params.leftChannel || false,
+                        disableLogs: params.disableLogs || false,
+                        recorderType: webrtcDetectedBrowser === 'edge' ? StereoAudioRecorder : null
+                    });
+                    var videoRecorder = RecordRTC(button.stream, {
+                        type: 'video',
+                        disableLogs: params.disableLogs || false,
+                        canvas: {
+                            width: params.canvas_width || 320,
+                            height: params.canvas_height || 240
+                        },
+                        frameInterval: typeof params.frameInterval !== 'undefined' ? parseInt(params.frameInterval) : 20 // minimum time between pushing frames to Whammy (in milliseconds)
+                    });
+                    // to sync audio/video playbacks in browser!
+                    videoRecorder.initRecorder(function () {
+                        audioRecorder.initRecorder(function () {
+                            audioRecorder.startRecording();
+                            videoRecorder.startRecording();
+                        });
+                    });
+                    button.recordRTC.push(audioRecorder, videoRecorder);
+                    button.recordingEndedCallback = function () {
+                        var audio = new Audio();
+                        audio.src = audioRecorder.toURL();
+                        audio.controls = true;
+                        audio.autoplay = true;
+                        audio.onloadedmetadata = function () {
+                            recordingPlayer.src = videoRecorder.toURL();
+                            recordingPlayer.play();
+                        };
+                        recordingPlayer.parentNode.appendChild(document.createElement('hr'));
+                        recordingPlayer.parentNode.appendChild(audio);
+                        if (audio.paused)
+                            audio.play();
+                    };
+                    return;
+                }
+
+                button.recordRTC = RecordRTC(button.stream, {
+                    type: 'video',
+                    disableLogs: params.disableLogs || false,
+                    // we can't pass bitrates or framerates here
+                    // Firefox MediaRecorder API lakes these features
+                });
+                button.recordingEndedCallback = function (url) {
+                    recordingPlayer.srcObject = null;
+                    recordingPlayer.muted = false;
+                    recordingPlayer.src = url;
+                    recordingPlayer.play();
+                    recordingPlayer.onended = function () {
+                        recordingPlayer.pause();
+                        recordingPlayer.src = URL.createObjectURL(button.recordRTC.blob);
+                    };
+                };
+                button.recordRTC.startRecording();
+            };
+        }
+
+        if (recordingMedia.value === 'record-screen') {
+            captureScreen(commonConfig);
+            button.mediaCapturedCallback = function () {
+                button.recordRTC = RecordRTC(button.stream, {
+                    type: mediaContainerFormat.value === 'Gif' ? 'gif' : 'video',
+                    disableLogs: params.disableLogs || false,
+                    canvas: {
+                        width: params.canvas_width || 320,
+                        height: params.canvas_height || 240
+                    }
+                });
+                button.recordingEndedCallback = function (url) {
+                    recordingPlayer.src = null;
+                    recordingPlayer.srcObject = null;
+                    if (mediaContainerFormat.value === 'Gif') {
+                        recordingPlayer.pause();
+                        recordingPlayer.poster = url;
+                        recordingPlayer.onended = function () {
+                            recordingPlayer.pause();
+                            recordingPlayer.poster = URL.createObjectURL(button.recordRTC.blob);
+                        };
+                        return;
+                    }
+
+                    recordingPlayer.src = url;
+                    recordingPlayer.play();
+                };
+                button.recordRTC.startRecording();
+            };
+        }
+
+        if (recordingMedia.value === 'record-audio-plus-screen') {
+            captureAudioPlusScreen(commonConfig);
+            button.mediaCapturedCallback = function () {
+                button.recordRTC = RecordRTC(button.stream, {
+                    type: 'video',
+                    disableLogs: params.disableLogs || false,
+                    // we can't pass bitrates or framerates here
+                    // Firefox MediaRecorder API lakes these features
+                });
+                button.recordingEndedCallback = function (url) {
+                    recordingPlayer.srcObject = null;
+                    recordingPlayer.muted = false;
+                    recordingPlayer.src = url;
+                    recordingPlayer.play();
+                    recordingPlayer.onended = function () {
+                        recordingPlayer.pause();
+                        recordingPlayer.src = URL.createObjectURL(button.recordRTC.blob);
+                    };
+                };
+                button.recordRTC.startRecording();
+            };
+        }
     }
-</style>
+
+
+    function captureVideo(config) {
+        captureUserMedia({video: true}, function (videoStream) {
+            recordingPlayer.srcObject = videoStream;
+            recordingPlayer.play();
+            config.onMediaCaptured(videoStream);
+            videoStream.onended = function () {
+                config.onMediaStopped();
+            };
+        }, function (error) {
+            config.onMediaCapturingFailed(error);
+        });
+    }
+
+    function captureAudio(config, id) {
+        alert(id);
+        var recordingDIV = document.querySelector('#recordrtc_' + id);
+        var recordingMedia = recordingDIV.querySelector('#recording-media_' + id);
+        var recordingPlayer = recordingDIV.querySelector('video');
+        var mediaContainerFormat = recordingDIV.querySelector('#media-container-format_' + id);
+        var button = recordingDIV.querySelector('#record_btn_' + id);
+        captureUserMedia({audio: true}, function (audioStream) {
+            recordingPlayer.srcObject = audioStream;
+            recordingPlayer.play();
+            config.onMediaCaptured(audioStream);
+            audioStream.onended = function () {
+                config.onMediaStopped();
+            };
+        }, function (error) {
+            config.onMediaCapturingFailed(error);
+        });
+    }
+
+    function captureAudioPlusVideo(config) {
+        captureUserMedia({video: true, audio: true}, function (audioVideoStream) {
+            recordingPlayer.srcObject = audioVideoStream;
+            recordingPlayer.play();
+            config.onMediaCaptured(audioVideoStream);
+            audioVideoStream.onended = function () {
+                config.onMediaStopped();
+            };
+        }, function (error) {
+            config.onMediaCapturingFailed(error);
+        });
+    }
+
+    function captureScreen(config) {
+        getScreenId(function (error, sourceId, screenConstraints) {
+            if (error === 'not-installed') {
+                document.write('<h1><a target="_blank" href="https://chrome.google.com/webstore/detail/screen-capturing/ajhifddimkapgcifgcodmmfdlknahffk">Please install this chrome extension then reload the page.</a></h1>');
+            }
+
+            if (error === 'permission-denied') {
+                alert('Screen capturing permission is denied.');
+            }
+
+            if (error === 'installed-disabled') {
+                alert('Please enable chrome screen capturing extension.');
+            }
+
+            if (error) {
+                config.onMediaCapturingFailed(error);
+                return;
+            }
+
+            captureUserMedia(screenConstraints, function (screenStream) {
+                recordingPlayer.srcObject = screenStream;
+                recordingPlayer.play();
+                config.onMediaCaptured(screenStream);
+                screenStream.onended = function () {
+                    config.onMediaStopped();
+                };
+            }, function (error) {
+                config.onMediaCapturingFailed(error);
+            });
+        });
+    }
+
+    function captureAudioPlusScreen(config) {
+        getScreenId(function (error, sourceId, screenConstraints) {
+            if (error === 'not-installed') {
+                document.write('<h1><a target="_blank" href="https://chrome.google.com/webstore/detail/screen-capturing/ajhifddimkapgcifgcodmmfdlknahffk">Please install this chrome extension then reload the page.</a></h1>');
+            }
+
+            if (error === 'permission-denied') {
+                alert('Screen capturing permission is denied.');
+            }
+
+            if (error === 'installed-disabled') {
+                alert('Please enable chrome screen capturing extension.');
+            }
+
+            if (error) {
+                config.onMediaCapturingFailed(error);
+                return;
+            }
+
+            screenConstraints.audio = true;
+            captureUserMedia(screenConstraints, function (screenStream) {
+                recordingPlayer.srcObject = screenStream;
+                recordingPlayer.play();
+                config.onMediaCaptured(screenStream);
+                screenStream.onended = function () {
+                    config.onMediaStopped();
+                };
+            }, function (error) {
+                config.onMediaCapturingFailed(error);
+            });
+        });
+    }
+
+    function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
+        navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
+    }
+
+    function setMediaContainerFormat(arrayOfOptionsSupported) {
+        var options = Array.prototype.slice.call(
+                mediaContainerFormat.querySelectorAll('option')
+                );
+        var selectedItem;
+        options.forEach(function (option) {
+            option.disabled = true;
+            if (arrayOfOptionsSupported.indexOf(option.value) !== -1) {
+                option.disabled = false;
+                if (!selectedItem) {
+                    option.selected = true;
+                    selectedItem = option;
+                }
+            }
+        });
+    }
+
+    recordingMedia.onchange = function () {
+        if (this.value === 'record-audio') {
+            setMediaContainerFormat(['WAV', 'Ogg']);
+            return;
+        }
+        setMediaContainerFormat(['WebM', /*'Mp4',*/ 'Gif']);
+    };
+    if (webrtcDetectedBrowser === 'edge') {
+        // webp isn't supported in Microsoft Edge
+        // neither MediaRecorder API
+        // so lets disable both video/screen recording options
+
+        console.warn('Neither MediaRecorder API nor webp is supported in Microsoft Edge. You cam merely record audio.');
+        recordingMedia.innerHTML = '<option value="record-audio">Audio</option>';
+        setMediaContainerFormat(['WAV']);
+    }
+
+    if (webrtcDetectedBrowser === 'firefox') {
+        // Firefox implemented both MediaRecorder API as well as WebAudio API
+        // Their MediaRecorder implementation supports both audio/video recording in single container format
+        // Remember, we can't currently pass bit-rates or frame-rates values over MediaRecorder API (their implementation lakes these features)
+
+        recordingMedia.innerHTML = '<option value="record-audio-plus-video">Audio+Video</option>'
+                + '<option value="record-audio-plus-screen">Audio+Screen</option>'
+                + recordingMedia.innerHTML;
+    }
+
+    // disabling this option because currently this demo
+    // doesn't supports publishing two blobs.
+    // todo: add support of uploading both WAV/WebM to server.
+    if (false && webrtcDetectedBrowser === 'chrome') {
+        recordingMedia.innerHTML = '<option value="record-audio-plus-video">Audio+Video</option>'
+                + recordingMedia.innerHTML;
+        console.info('This RecordRTC demo merely tries to playback recorded audio/video sync inside the browser. It still generates two separate files (WAV/WebM).');
+    }
+
+    function saveToDiskOrOpenNewTab(recordRTC, id) {
+        var recordingDIV = document.querySelector('#recordrtc_' + id);
+        recordingDIV.querySelector('#upload-to-server_' + id).parentNode.style.display = 'block';
+        recordingDIV.querySelector('#upload-to-server_' + id).disabled = false;
+        recordingDIV.querySelector('#upload-to-server_' + id).onclick = function () {
+            if (!recordRTC)
+                return alert('No recording found.');
+            this.disabled = true;
+            var button = this;
+            uploadToServer(recordRTC, id, function (progress, fileURL) {
+                if (progress === 'ended') {
+                    button.disabled = false;
+                    button.innerHTML = 'Click to download from server';
+                    button.onclick = function () {
+                        window.open(fileURL);
+                    };
+                    return;
+                }
+                button.innerHTML = progress;
+            });
+        };
+    }
+
+    var listOfFilesUploaded = [];
+    function uploadToServer(recordRTC, id, callback) {
+        var blob = recordRTC instanceof Blob ? recordRTC : recordRTC.blob;
+        var fileType = blob.type.split('/')[0] || 'audio';
+        var fileName = (Math.random() * 1000).toString().replace('.', '');
+        if (fileType === 'audio') {
+            fileName += '.' + (!!navigator.mozGetUserMedia ? 'ogg' : 'wav');
+        } else {
+            fileName += '.webm';
+        }
+
+        // create FormData
+        var formData = new FormData();
+        formData.append(fileType + '-filename', fileName);
+        formData.append(fileType + '-blob', blob);
+        formData.append('response_id', id);
+        //formData.append('survey_id', document.getElementById('survey_id').value);
+        formData.append("label", "MEDIAAUDIOUPLOAD");
+        callback('Uploading ' + fileType + ' recording to server.');
+        makeXMLHttpRequest('<?php echo site_url('ajax-upload-media'); ?>', formData, function (progress) {
+            if (progress !== 'upload-ended') {
+                callback(progress);
+                return;
+            }
+
+            var initialURL = location.href.replace(location.href.split('/').pop(), '') + 'uploads/';
+            callback('ended', initialURL + fileName);
+            // to make sure we can delete as soon as visitor leaves
+            listOfFilesUploaded.push(initialURL + fileName);
+        });
+    }
+
+    function makeXMLHttpRequest(url, data, callback) {
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function () {
+            if (request.readyState == 4 && request.status == 200) {
+                callback('upload-ended');
+            }
+        };
+        request.upload.onloadstart = function () {
+            callback('Upload started...');
+        };
+        request.upload.onprogress = function (event) {
+            callback('Upload Progress ' + Math.round(event.loaded / event.total * 100) + "%");
+        };
+        request.upload.onload = function () {
+            callback('progress-about-to-end');
+        };
+        request.upload.onload = function () {
+            callback('progress-ended');
+        };
+        request.upload.onerror = function (error) {
+            callback('Failed to upload to server');
+            console.error('XMLHttpRequest failed', error);
+        };
+        request.upload.onabort = function (error) {
+            callback('Upload aborted.');
+            console.error('XMLHttpRequest aborted', error);
+        };
+        request.open('POST', url);
+        request.send(data);
+    }
+
+    window.onbeforeunload = function () {
+        recordingDIV.querySelector('button').disabled = false;
+        recordingMedia.disabled = false;
+        mediaContainerFormat.disabled = false;
+        if (!listOfFilesUploaded.length)
+            return;
+        listOfFilesUploaded.forEach(function (fileURL) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (request.readyState == 4 && request.status == 200) {
+                    if (this.responseText === ' problem deleting files.') {
+                        alert('Failed to delete ' + fileURL + ' from the server.');
+                        return;
+                    }
+
+                    listOfFilesUploaded = [];
+                    alert('You can leave now. Your files are removed from the server.');
+                }
+            };
+            request.open('POST', 'delete.php');
+            var formData = new FormData();
+            formData.append('delete-file', fileURL.split('/').pop());
+            request.send(formData);
+        });
+        return 'Please wait few seconds before your recordings are deleted from the server.';
+    };
+</script>
+
+
+
 </html>

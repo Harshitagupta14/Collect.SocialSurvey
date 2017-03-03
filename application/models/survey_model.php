@@ -76,7 +76,7 @@ class Survey_Model extends CI_Model {
     }
 
     public function get_published_response_feeds_by_args($survey_id = FALSE, $response_id = FALSE, $status = FALSE) {
-        $survey_select = '`survey_response`.*,`survey_response`.`id` as response_id,`survey_question`.*,`survey_response_question`.`survey_res_fk_id`,`survey_response_question`.`question_no`,`survey_response_question`.`question_response`,`survey_response_question`.`add_time`,`survey_response_question`.`modify_time`,`survey_response_question`.`id` as question_response_id,`survey`.`survey_id`,`survey`.`survey_title`';
+        $survey_select = '`survey_response`.*,`survey_response`.`id` as response_id,`survey_question`.*,`survey_response_question`.`survey_res_fk_id`,`survey_response_question`.`question_no`,`survey_response_question`.`question_response`,`survey_response_question`.`add_time`,`survey_response_question`.`modify_time`,`survey_response_question`.`id` as question_response_id,`survey_response_question`.`response_media_fk_id`,`survey`.`survey_id`,`survey`.`survey_title`';
         $final_select = " $survey_select, survey_type.type_small_name, survey_type.type_name";
 
         $final_query = $this->db->select($final_select)
@@ -92,6 +92,42 @@ class Survey_Model extends CI_Model {
                 ->order_by('question_response_id', 'ASC')
                 ->get();
         return $final_query->result_array();
+    }
+
+    function add_media_details($media_insert_id, $media_name, $media_path, $media_tpye, $id, $survey_id = FALSE) {
+        if ($media_insert_id != '' && $media_insert_id != 0) {
+            $this->db->where('id', $media_insert_id);
+        } else {
+            $this->db->where('session_id', $this->session->userdata('my_session_id'));
+        }
+        $this->db->where('survey_fk_id', $survey_id);
+        $query = $this->db->get('tbl_survey_response_media');
+        $nums = $query->num_rows();
+        if ($nums > 0) {
+            $this->db->set('media_name', $media_name);
+            $this->db->set('media_path', $media_path);
+            $this->db->set('media_type', $media_tpye);
+            $this->db->set('surveyor_fk_id', $this->flexi_auth->get_user_by_identity_row_array()['uacc_id']);
+            if ($media_insert_id != '' && $media_insert_id != 0) {
+                $this->db->where('id', $media_insert_id);
+            } else {
+                $this->db->where('session_id', $this->session->userdata('my_session_id'));
+            }
+            $this->db->where('survey_fk_id', $survey_id);
+            $response = $this->db->update('tbl_survey_response_media');
+        } else {
+            $this->db->set('session_id', $this->session->userdata('my_session_id'));
+            $this->db->set('survey_fk_id', $survey_id);
+            $this->db->set('media_name', $media_name);
+            $this->db->set('media_path', $media_path);
+            $this->db->set('media_type', $media_tpye);
+            $this->db->set('surveyor_fk_id', $this->flexi_auth->get_user_by_identity_row_array()['uacc_id']);
+            $this->db->set('status', 'active');
+            $this->db->set('add_time', time());
+            $this->db->insert('tbl_survey_response_media');
+            $response = $this->db->insert_id();
+        }
+        return $response;
     }
 
 }

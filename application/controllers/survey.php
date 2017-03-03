@@ -69,6 +69,7 @@ class Survey extends CI_Controller {
                 $data_question_response[$i]['question_no'] = $i;
                 $data_question_response[$i]['question_type'] = $this->input->post('question_type_' . $i);
                 $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
+                $data_question_response[$i]['response_media_fk_id'] = $this->input->post('response_media_fk_id' . $i);
                 $data_question_response[$i]['add_time'] = date('Y-m-d H:i:s');
             }
             $response = $this->common_model->insert_batch('tbl_survey_question_response', $data_question_response);
@@ -82,6 +83,7 @@ class Survey extends CI_Controller {
                 $data_question_response[$i]['question_no'] = $i;
                 $data_question_response[$i]['question_type'] = $this->input->post('question_type_' . $i);
                 $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
+                $data_question_response[$i]['response_media_fk_id'] = $this->input->post('response_media_fk_id' . $i);
                 $data_question_response[$i]['modify_time'] = date('Y-m-d H:i:s');
             }
             $response = $this->common_model->update_batch('tbl_survey_question_response', $data_question_response, 'id');
@@ -95,6 +97,7 @@ class Survey extends CI_Controller {
                 $data_question_response[$i]['question_no'] = $i;
                 $data_question_response[$i]['question_type'] = $this->input->post('question_type_' . $i);
                 $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
+                $data_question_response[$i]['response_media_fk_id'] = $this->input->post('response_media_fk_id' . $i);
                 $data_question_response[$i]['add_time'] = date('Y-m-d H:i:s');
             }
             $response = $this->common_model->insert_batch('tbl_survey_question_response', $data_question_response);
@@ -108,6 +111,7 @@ class Survey extends CI_Controller {
                 $data_question_response[$i]['question_no'] = $i;
                 $data_question_response[$i]['question_type'] = $this->input->post('question_type_' . $i);
                 $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
+                $data_question_response[$i]['response_media_fk_id'] = $this->input->post('response_media_fk_id' . $i);
                 $data_question_response[$i]['modify_time'] = date('Y-m-d H:i:s');
             }
             $response = $this->common_model->update_batch('tbl_survey_question_response', $data_question_response, 'id');
@@ -224,41 +228,89 @@ class Survey extends CI_Controller {
 //    }
 
     public function ajax_upload_media() {
+
         if ($this->input->post('label') == 'MEDIAIMAGEUPLOAD') {
-            $id = $this->input->post('response_id');
-            $_FILES['mediaFile']['name'] = time() . $_FILES['mediaFile']['name']; //Changing FIlename
-            if (!empty($_FILES)) {
-                $config['upload_path'] = 'assets/uploads/response_images';
-                $config['allowed_types'] = 'gif|jpg|png|jpeg';
-                $this->load->library('upload', $config);
-                if ($_FILES['mediaFile']['name'] != '') {
-                    if (!$this->upload->do_upload('mediaFile')) {
-                        $data['error'] = array('error' => $this->upload->display_errors());
-                        $data['success'] = 'false';
-                    } else {
-                        $fileData = $this->upload->data();
-                        $data['file_name'] = $fileData['file_name'];
-                        $data['full_path'] = $fileData['full_path'];
-                        $data['success'] = 'true';
-                        $file_name = 'file_name' . $id;
-                        $full_path = 'full_path' . $id;
-                        if ($this->session->userdata($file_name)) {
-                            $this->session->unset_userdata($file_name);
-                            $this->session->unset_userdata($full_path);
-                        }
-                        if ($id != '') {
-                            $this->session->set_userdata('file_name1', $data['file_name']);
-                            $this->session->set_userdata('full_path1', $data['full_path']);
-                            $data['session_filename'] = $this->session->userdata('file_name1');
-                            $data['session_filename_no'] = $file_name;
-                            //$this->apply->add_bank_statement($data['file_name'], $data['full_path'], $id, $app_id);
-                        }
+            $data = $this->handle_image_upload();
+        } else if ($this->input->post('label') == 'MEDIAAUDIOUPLOAD') {
+            $data = $this->handle_audio_upload();
+        }
+        echo json_encode($data);
+        die;
+    }
+
+    public function handle_image_upload() {
+        $media_type = "Image";
+        $id = $this->input->post('response_id');
+        $survey_id = $this->input->post('survey_id');
+        $media_id = $this->input->post('media_insert_id');
+        $_FILES['mediaFile']['name'] = time() . $_FILES['mediaFile']['name']; //Changing FIlename
+        if (!empty($_FILES)) {
+            $config['upload_path'] = 'assets/uploads/response_images';
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+            $this->load->library('upload', $config);
+            if ($_FILES['mediaFile']['name'] != '') {
+                if (!$this->upload->do_upload('mediaFile')) {
+                    $data['error'] = array('error' => $this->upload->display_errors());
+                    $data['success'] = 'false';
+                } else {
+                    $fileData = $this->upload->data();
+                    $data['media_file_name'] = $fileData['file_name'];
+                    $data['media_full_path'] = $fileData['full_path'];
+                    $data['success'] = 'true';
+                    $file_name = 'file_name' . $id;
+                    $full_path = 'full_path' . $id;
+                    if ($this->session->userdata($file_name)) {
+                        $this->session->unset_userdata($file_name);
+                        $this->session->unset_userdata($full_path);
+                    }
+                    if ($id != '') {
+                        $this->session->set_userdata('file_name1', $data['file_name']);
+                        $this->session->set_userdata('full_path1', $data['full_path']);
+                        $data['session_filename'] = $this->session->userdata('file_name1');
+                        $media_insert_id = $this->survey->add_media_details($media_id, $data['media_file_name'], $data['media_full_path'], $media_type, $id, $survey_id);
+                        $data['media_session_id'] = $this->session->userdata('my_session_id');
+                        $data['media_insert_id'] = $media_insert_id;
                     }
                 }
-                echo json_encode($data);
-                die;
             }
         }
+        return $data;
+    }
+
+    public function handle_audio_upload() {
+        $media_type = "Audio";
+        $id = $this->input->post('response_id');
+        $survey_id = $this->input->post('survey_id');
+        $media_id = $this->input->post('media_insert_id');
+        //foreach (array('video', 'audio') as $type) {
+        if (isset($_FILES["mediaFile"])) {
+
+            $fileName = $_FILES['mediaFile']['name'] = time() . $_FILES['mediaFile']['name'] . '.mp3';
+            $uploadDirectory = $_SERVER['DOCUMENT_ROOT'] . '/Collect.SocialSurvey/assets/uploads/response_audio/' . $fileName;
+
+            if (!move_uploaded_file($_FILES["mediaFile"]["tmp_name"], $uploadDirectory)) {
+                $data['error'] = array('error' => 'Issue in Uploading , Error Code:' . $_FILES['mediaFile']['error']);
+                $data['success'] = 'false';
+            } else {
+                $data['media_file_name'] = $fileName;
+                $data['media_full_path'] = $uploadDirectory;
+                $data['success'] = 'true';
+                $file_name = 'file_name' . $id;
+                $full_path = 'full_path' . $id;
+                if ($this->session->userdata($file_name)) {
+                    $this->session->unset_userdata($file_name);
+                    $this->session->unset_userdata($full_path);
+                }
+                if ($id != '') {
+                    $this->session->set_userdata('file_name1', $data['file_name']);
+                    $this->session->set_userdata('full_path1', $data['full_path']);
+                    $media_insert_id = $this->survey->add_media_details($media_id, $data['media_file_name'], $data['media_full_path'], $media_type, $id, $survey_id);
+                    $data['media_session_id'] = $this->session->userdata('my_session_id');
+                    $data['media_insert_id'] = $media_insert_id;
+                }
+            }
+        }
+        return $data;
     }
 
 }

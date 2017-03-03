@@ -10,7 +10,7 @@
             <div id="survey-questions-block">
 
                 <form method="post" id="survey_response_form" >
-                    <input type="hidden" value="<?php echo $survey_id; ?>" name="survey_id" />
+                    <input type="hidden" value="<?php echo $survey_id; ?>" name="survey_id" id="survey_id"/>
                     <input type="hidden" value="<?php echo count($survey_question_data); ?>" name="total_question" id="total_question" />
                     <?php foreach ($survey_question_data as $key => $value) { ?>
                         <div class="col-md-12">
@@ -46,6 +46,8 @@
                                                                         <input type="hidden" id="question_limit_upper_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_limit_upper']; ?>" />
                                                                         <input type="hidden" id="question_multiple_options_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_multiple_options']; ?>" />
                                                                         <input type="hidden" id="question_type_<?php echo $value['question_no']; ?>" value="<?php echo $value['type_name']; ?>" name="question_type_<?php echo $value['question_no']; ?>"/>
+
+                                                                        <input type="hidden" id="response_media_fk_id<?php echo $value['question_no']; ?>" value="<?php echo $value['response_media_fk_id']; ?>" name="response_media_fk_id<?php echo $value['question_no']; ?>"/>
                                                                     </div>
                                                                 </div>
                                                             </div>
