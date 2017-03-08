@@ -25,7 +25,7 @@ $config['frontassets'] = $config['base_url'] . 'assets/frontend/';
 $config['emailerassets'] = $config['base_url'] . 'assets/emailer/';
 $config['ckeditor_basepath'] = $config['base_url'] . "assets/ckeditor/";
 $config['uploads'] = $config['base_url'] . "assets/uploads/";
-$config['sitename'] = 'polson';
+$config['sitename'] = 'Collect - SocialEverest';
 $config['template'] = 'default';
 $config['adminFolder'] = 'admin';
 

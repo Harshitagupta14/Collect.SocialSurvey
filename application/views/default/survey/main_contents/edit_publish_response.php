@@ -11,17 +11,26 @@
             <div id="survey-questions-block">
 
                 <form method="post" id="survey_response_form" >
-                    <input type="hidden" value="<?php echo $survey_question_data[0]['survey_id']; ?>" name="survey_id" id="survey_id" />
-                    <input type="hidden" value="<?php echo $survey_question_data[0]['response_id']; ?>" name="survey_response_id" />
+                    <input type="hidden" value="<?php echo $survey_question_data[0]['survey_enc_id']; ?>" name="survey_id" id="survey_id" />
+                    <input type="hidden" value="<?php echo $survey_response_data[0]['response_id']; ?>" name="survey_response_id" />
                     <input type="hidden" value="<?php echo count($survey_question_data); ?>" name="total_question" id="total_question" />
                     <?php foreach ($survey_question_data as $key => $value) { ?>
+                        <?php
+                        if ($value['question_key'] == $survey_response_data[$key]['question_key']) {
+                            $question_response = $survey_response_data[$key]['question_response'];
+                            $badge_success = 'badge-success';
+                        } else {
+                            $question_response = '';
+                            $badge_success = '';
+                        }
+                        ?>
                         <div class="col-md-12">
                             <div class="row">
                                 <div class="portlet light ">
                                     <div class="portlet-title tabbable-line">
                                         <div class="caption">
                                             <i class=" icon-social-twitter font-dark hide"></i>
-                                            <span class="badge badge-success" id="question_<?php echo $value['question_no']; ?>_badge"> <?php echo $value['question_no']; ?> </span>
+                                            <span class="badge <?php echo $badge_success; ?>" id="question_<?php echo $value['question_no']; ?>_badge"> <?php echo $value['question_no']; ?> </span>
                                             <span class="caption-subject font-dark bold uppercase"><?php echo $value['type_name']; ?></span>
                                         </div>
                                         <span class="question-required-label"></span>
@@ -47,10 +56,12 @@
                                                                         <input type="hidden" id="question_limit_lower_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_limit_lower']; ?>" />
                                                                         <input type="hidden" id="question_limit_upper_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_limit_upper']; ?>" />
                                                                         <input type="hidden" id="question_multiple_options_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_multiple_options']; ?>" />
-                                                                        <input type="hidden" id="question_type_<?php echo $value['question_no']; ?>" value="<?php echo $value['type_name']; ?>" />
-                                                                        <input type="hidden" name="question_response_id_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_response_id']; ?>" name="question_type_<?php echo $value['question_no']; ?>" />
+                                                                        <input type="hidden" id="question_type_<?php echo $value['question_no']; ?>" value="<?php echo $value['type_name']; ?>" name="question_type_<?php echo $value['question_no']; ?>"/>
+                                                                        <input type="hidden" id="question_key_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_key']; ?>" name="question_key_<?php echo $value['question_no']; ?>" />
 
-                                                                        <input type="hidden" id="response_media_fk_id<?php echo $value['question_no']; ?>" value="<?php echo $value['response_media_fk_id']; ?>" name="response_media_fk_id<?php echo $value['question_no']; ?>"/>
+                                                                        <input type="hidden" name="question_response_id_<?php echo $value['question_no']; ?>" value="<?php echo $survey_response_data[$key]['question_response_id']; ?>" name="question_type_<?php echo $value['question_no']; ?>" />
+
+                                                                        <input type="hidden" id="response_media_fk_id<?php echo $value['question_no']; ?>" value="<?php echo $survey_response_data[$key]['response_media_fk_id']; ?>" name="response_media_fk_id<?php echo $value['question_no']; ?>"/>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -58,7 +69,8 @@
                                                                 <div class="col-md-12" style="padding-top:10px;">
                                                                     <!--input-group-->
                                                                     <a class="input-group" data-toggle="modal" href="#modal_<?php echo $value['question_no']; ?>" onclick="create_modal(<?php echo $value['question_no']; ?>);" data-question-type="<?php echo $value['type_name']; ?>" style="cursor:pointer;" onclick="create_modal(<?php echo $value['question_no']; ?>);">
-                                                                        <input class="form-control" id="response_<?php echo $value['question_no']; ?>" name="response_<?php echo $value['question_no']; ?>" placeholder="" readonly="" type="text" style="cursor:pointer;" value="<?php echo $value['question_response']; ?>">
+
+                                                                        <input class="form-control" id="response_<?php echo $value['question_no']; ?>" name="response_<?php echo $value['question_no']; ?>" placeholder="" readonly="" type="text" style="cursor:pointer;" value="<?php echo $question_response; ?>">
                                                                         <span class="input-group-btn">
                                                                             <i class="btn blue fa fa-arrow-right"></i>
                                                                         </span>
@@ -87,7 +99,7 @@
 
         <div class="question-response-actions">
             <button type="button" class="btn btn-danger" id="exit_question_response" onclick="exit_question_response();" style="width:49%;"><i class="icon-close"></i>Exit</button>
-            <a type="button" id="add_surveyor" data-toggle="modal" href="#survey_response_save_options"  class="btn btn-success" style="width:49%;">Save</a>
+            <button type="button" id="add_surveyor"   onclick="save_question_response('publish_update');"  class="btn btn-warning" style="width:49%;"><i class="icon-cloud-upload"></i>Update</button>
 
         </div>
 
@@ -99,14 +111,9 @@
         </div>
         <div class="modal-body">
             <center>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button type="button" data-dismiss="modal" class="btn btn-outline btn-warning" onclick="save_question_response('draft_update');" style="width:100%;">Save as Draft</button><br/>
-                    </div>
-                </div>
                 <div class="row" style="margin-top:10%;">
                     <div class="col-md-12">
-                        <button type="button" data-dismiss="modal" class="btn btn-outline btn-primary" onclick="save_question_response('publish_update');" style="width:100%;">Publish</button>
+                        <button type="button" data-dismiss="modal" class="btn btn-outline btn-primary" onclick="save_question_response('publish_update');" style="width:100%;">Update</button>
                     </div>
                 </div>
             </center>
@@ -118,6 +125,7 @@
     <div id="modals"></div>
 </div>
 <script>
+    var preloading_icon = '<?php echo $this->config->item('frontassets'); ?>images/Preloader_1.gif';
     function save_question_response(response_sumbit_status = '') {
         var valid = validate_survey_response();
         if (valid == true) {
@@ -131,7 +139,7 @@
                 data: {str: str},
                 beforeSend: function () {
                     $('.question-overlay').show();
-                    $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_1.gif" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:#fff;">Publishing Response , Please wait...</p>');
+                    $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="' + preloading_icon + '" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:#fff;">Publishing Response , Please wait...</p>');
                     $('.question-modal').show();
                 },
                 success: function (stat) {
@@ -139,15 +147,15 @@
                     //var data = JSON.parse(response);
                     console.log(stat);
                     if (stat.success === "true") {
-                        $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_1.gif" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:green;">Publishing Response Done...</p>');
+                        $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="' + preloading_icon + '" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:green;">Publishing Response Done...</p>');
                         setTimeout(function () {
                             $('.question-overlay').hide();
                             $('.question-modal').html('');
                             $('.question-modal').hide();
                         }, 2000);
-                        window.location.href = '<?php echo site_url('dashboard'); ?>';
+                        window.location.href = '<?php echo site_url('published-response'); ?>';
                     } else if (stat.success === "false") {
-                        $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_1.gif" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:green;">Publishing Response Unsuccessfull, Try again. ...</p>');
+                        $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="' + preloading_icon + '" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:green;">Publishing Response Unsuccessfull, Try again. ...</p>');
                         setTimeout(function () {
                             $('.question-overlay').hide();
                             $('.question-modal').html('');

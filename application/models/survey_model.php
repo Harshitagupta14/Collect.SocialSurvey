@@ -26,12 +26,13 @@ class Survey_Model extends CI_Model {
 
     public function get_survey_questions_by_args($id = FALSE, $question_no = FALSE) {
 
-        $survey_select = '`survey_question`.*';
+        $survey_select = '`survey_question`.*,`survey`.`survey_id` as survey_enc_id,`survey`.`id` as survey_id';
         $final_select = " $survey_select, survey_type.type_small_name, survey_type.type_name";
 
         $this->db->select($final_select);
         $this->db->from("`tbl_survey_question` as `survey_question`");
         $this->db->join("`tbl_survey_question_type` as `survey_type` ", ' survey_question.type_id_fk = survey_type.id', 'left');
+        $this->db->join("`tbl_survey` as `survey` ", 'survey.id = survey_question.survey_fk_id', 'left');
         $this->db->where("`survey_question.survey_fk_id`", $id);
         if ($question_no) {
             $this->db->where("`survey_question.question_no`", $question_no);
@@ -76,17 +77,14 @@ class Survey_Model extends CI_Model {
     }
 
     public function get_published_response_feeds_by_args($survey_id = FALSE, $response_id = FALSE, $status = FALSE) {
-        $survey_select = '`survey_response`.*,`survey_response`.`id` as response_id,`survey_question`.*,`survey_response_question`.`survey_res_fk_id`,`survey_response_question`.`question_no`,`survey_response_question`.`question_response`,`survey_response_question`.`add_time`,`survey_response_question`.`modify_time`,`survey_response_question`.`id` as question_response_id,`survey_response_question`.`response_media_fk_id`,`survey`.`survey_id`,`survey`.`survey_title`';
-        $final_select = " $survey_select, survey_type.type_small_name, survey_type.type_name";
+        $response_select = '`survey_response`.*,`survey_response`.`id` as response_id,`survey_response_question`.*,`survey_response_question`.`id` as question_response_id';
+        $final_select = "$response_select";
 
         $final_query = $this->db->select($final_select)
                 ->from("`tbl_survey_response` as `survey_response`")
-                ->join("`tbl_survey` as `survey` ", ' survey.id = survey_response.survey_fk_id', 'left')
                 ->join("`tbl_survey_question_response` as `survey_response_question` ", ' survey_response_question.survey_res_fk_id = survey_response.id', 'left')
-                ->join("`tbl_survey_question` as `survey_question` ", 'survey_response_question.question_no = survey_question.question_no', 'left')
-                ->join("`tbl_survey_question_type` as `survey_type` ", ' survey_question.type_id_fk = survey_type.id', 'left')
                 ->where("`survey_response`.`id`", $response_id)
-                ->where("`survey_question`.`survey_fk_id`", $survey_id)
+                ->where("`survey_response`.`survey_fk_id`", $survey_id)
                 ->where("`survey_response`.`survey_res_status`", $status)
                 ->group_by('question_response_id')
                 ->order_by('question_response_id', 'ASC')
@@ -128,6 +126,54 @@ class Survey_Model extends CI_Model {
             $response = $this->db->insert_id();
         }
         return $response;
+    }
+
+    function save_response($data, $response_id) {
+        //$id = $this->save_post($data);
+        $this->db->select('id');
+        $this->db->where('survey_res_fk_id', $response_id);
+        $survey_response = $this->db->get('tbl_survey_question_response')->result_array();
+
+
+        $i = 0;
+        //check logic
+        if (count($data['survey_response_data']) > count($survey_response)) {
+            //update and insert
+            $update_survey_response = array();
+            for ($i = 0; $i < count($survey_response); $i++):
+                $update_survey_response[$i] = $data['survey_response_data'][$i];
+                $update_survey_response[$i]['id'] = $survey_response[$i]['id'];
+            endfor;
+            $insert_survey_response = array();
+            for ($j = $i, $k = 0; $j < count($data['survey_response_data']); $j++, $k++):
+                $insert_survey_response[$k] = $data['survey_response_data'][$j];
+            endfor;
+
+            if (!empty($update_survey_response)) {
+                $this->db->update_batch('tbl_survey_question_response', $update_survey_response, 'id');
+            }
+            if (!empty($insert_survey_response)) {
+                $this->db->insert_batch('tbl_survey_question_response', $insert_survey_response);
+            }
+        } else {
+            //update then delete
+            $changes = count($survey_response) - count($data['survey_response_data']);
+            $updatable = array();
+            for ($i = 0; $i < count($data['survey_response_data']); $i++):
+                $updatable[$i] = $data['survey_response_data'][$i];
+                $updatable[$i]['id'] = $survey_response[$i]['id'];
+            endfor;
+            if (!empty($updatable)) {
+                $this->db->update_batch('tbl_survey_question_response', $updatable, 'id');
+            }
+            if ($changes != 0) {
+                //deleting rows
+                $ids = array_column(array_slice($survey_response, count($data['survey_response_data'])), 'id');
+                $this->db->where_in('id', $ids);
+                $this->db->delete('tbl_survey_question_response');
+            }
+        }
+        return $response_id;
     }
 
 }

@@ -10,7 +10,7 @@
             <div id="survey-questions-block">
 
                 <form method="post" id="survey_response_form" >
-                    <input type="hidden" value="<?php echo $survey_id; ?>" name="survey_id" id="survey_id"/>
+                    <input type="hidden" value="<?php echo $id; ?>" name="survey_id" id="survey_id"/>
                     <input type="hidden" value="<?php echo count($survey_question_data); ?>" name="total_question" id="total_question" />
                     <?php foreach ($survey_question_data as $key => $value) { ?>
                         <div class="col-md-12">
@@ -46,6 +46,8 @@
                                                                         <input type="hidden" id="question_limit_upper_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_limit_upper']; ?>" />
                                                                         <input type="hidden" id="question_multiple_options_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_multiple_options']; ?>" />
                                                                         <input type="hidden" id="question_type_<?php echo $value['question_no']; ?>" value="<?php echo $value['type_name']; ?>" name="question_type_<?php echo $value['question_no']; ?>"/>
+
+                                                                        <input type="hidden" id="question_key_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_key']; ?>" name="question_key_<?php echo $value['question_no']; ?>" />
 
                                                                         <input type="hidden" id="response_media_fk_id<?php echo $value['question_no']; ?>" value="<?php echo $value['response_media_fk_id']; ?>" name="response_media_fk_id<?php echo $value['question_no']; ?>"/>
                                                                     </div>
@@ -115,6 +117,7 @@
     <div id="modals"></div>
 </div>
 <script>
+    var preloading_icon = '<?php echo $this->config->item('frontassets'); ?>images/Preloader_1.gif';
     function save_question_response(response_sumbit_status = '') {
         var valid = validate_survey_response();
         if (valid == true) {
@@ -128,7 +131,7 @@
                 data: {str: str},
                 beforeSend: function () {
                     $('.question-overlay').show();
-                    $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_1.gif" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:#fff;">Publishing Response , Please wait...</p>');
+                    $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="' + preloading_icon + '" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:#fff;">Publishing Response , Please wait...</p>');
                     $('.question-modal').show();
                 },
                 success: function (stat) {
@@ -136,7 +139,7 @@
                     //var data = JSON.parse(response);
                     console.log(stat);
                     if (stat.success === "true") {
-                        $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_1.gif" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:green;">Publishing Response Done...</p>');
+                        $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="' + preloading_icon + '" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:green;">Publishing Response Done...</p>');
                         setTimeout(function () {
                             $('.question-overlay').hide();
                             $('.question-modal').html('');
@@ -144,7 +147,7 @@
                         }, 2000);
                         window.location.href = '<?php echo site_url('dashboard'); ?>';
                     } else if (stat.success === "false") {
-                        $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="http://smallenvelop.com/wp-content/uploads/2014/08/Preloader_1.gif" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:green;">Publishing Response Unsuccessfull, Try again. ...</p>');
+                        $('.question-modal').html('<img class="alignleft wp-image-725 size-full" draggable="false" src="' + preloading_icon + '" alt="Loading icon cube" width="64" height="64"><p style="margin:-130px 0 16px; color:green;">Publishing Response Unsuccessfull, Try again. ...</p>');
                         setTimeout(function () {
                             $('.question-overlay').hide();
                             $('.question-modal').html('');

@@ -28,7 +28,7 @@ class Survey extends CI_Controller {
         $data['METATITLE'] = "Create Survey - Step 1";
         $data['METAKEYWORDS'] = "Create Survey - Step 1";
         $data['METADESCRIPTION'] = "Create Survey - Step 1";
-        $data['id'] = $this->flexi_auth->get_user_by_identity_row_array()['uacc_id'];
+        $data['id'] = $id;
         $data['breadcrumb'] = '<li class="active">Services</li>';
         $data['survey_types'] = $this->common_model->fetch_where('tbl_survey_question_type');
         $data['survey_id'] = $survey_data['survey_id'];
@@ -50,7 +50,7 @@ class Survey extends CI_Controller {
     }
 
     public function handle_publish_survey_response() {
-        $data_question_response = array();
+        $data['survey_response_data'] = array();
         $survey_encrypted_id = $this->input->post("survey_id");
         $survey_total_question = $this->input->post("total_question");
         $survey_data = $this->common_model->fetch_where('tbl_survey', '*', array('survey_id' => $survey_encrypted_id))[0];
@@ -64,57 +64,65 @@ class Survey extends CI_Controller {
             $data_response['add_time'] = date('Y-m-d H:i:s');
             $this->common_model->insert_data('tbl_survey_response', $data_response);
             $id = $this->db->insert_id();
-            for ($i = 1; $i <= $survey_total_question; $i++) {
-                $data_question_response[$i]['survey_res_fk_id'] = $id;
-                $data_question_response[$i]['question_no'] = $i;
-                $data_question_response[$i]['question_type'] = $this->input->post('question_type_' . $i);
-                $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
-                $data_question_response[$i]['response_media_fk_id'] = $this->input->post('response_media_fk_id' . $i);
-                $data_question_response[$i]['add_time'] = date('Y-m-d H:i:s');
+            for ($i = 0; $i < $survey_total_question; $i++) {
+                $j = $i + 1;
+                $data['survey_response_data'][$i]['survey_res_fk_id'] = $id;
+                $data['survey_response_data'][$i]['question_no'] = $j;
+                $data['survey_response_data'][$i]['question_type'] = $this->input->post('question_type_' . $j);
+                $data['survey_response_data'][$i]['question_key'] = $this->input->post('question_key_' . $j);
+                $data['survey_response_data'][$i]['question_response'] = $this->input->post('response_' . $j);
+                $data['survey_response_data'][$i]['response_media_fk_id'] = $this->input->post('response_media_fk_id' . $j);
+                $data['survey_response_data'][$i]['add_time'] = date('Y-m-d H:i:s');
             }
-            $response = $this->common_model->insert_batch('tbl_survey_question_response', $data_question_response);
+            $response = $this->survey->save_response($data, $id);
         } else if (isset($survey_publish_status) && $survey_publish_status == 'publish_update') {
             $data_response['survey_res_status'] = 'published';
             $data_response['modify_time'] = date('Y-m-d H:i:s');
             $survey_response_id = $this->input->post('survey_response_id');
             $this->common_model->update_data('tbl_survey_response', array('id' => $survey_response_id), $data_response);
-            for ($i = 1; $i <= $survey_total_question; $i++) {
-                $data_question_response[$i]['id'] = $this->input->post('question_response_id_' . $i);
-                $data_question_response[$i]['question_no'] = $i;
-                $data_question_response[$i]['question_type'] = $this->input->post('question_type_' . $i);
-                $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
-                $data_question_response[$i]['response_media_fk_id'] = $this->input->post('response_media_fk_id' . $i);
-                $data_question_response[$i]['modify_time'] = date('Y-m-d H:i:s');
+            for ($i = 0; $i < $survey_total_question; $i++) {
+                $j = $i + 1;
+                $data['survey_response_data'][$i]['survey_res_fk_id'] = $survey_response_id;
+                $data['survey_response_data'][$i]['question_no'] = $j;
+                $data['survey_response_data'][$i]['question_type'] = $this->input->post('question_type_' . $j);
+                $data['survey_response_data'][$i]['question_key'] = $this->input->post('question_key_' . $j);
+                $data['survey_response_data'][$i]['question_response'] = $this->input->post('response_' . $j);
+                $data['survey_response_data'][$i]['response_media_fk_id'] = $this->input->post('response_media_fk_id' . $j);
+                $data['survey_response_data'][$i]['modify_time'] = date('Y-m-d H:i:s');
             }
-            $response = $this->common_model->update_batch('tbl_survey_question_response', $data_question_response, 'id');
+            $response = $this->survey->save_response($data, $survey_response_id);
         } else if (isset($survey_publish_status) && $survey_publish_status == 'draft_insert') {
             $data_response['survey_res_status'] = 'draft';
             $data_response['add_time'] = date('Y-m-d H:i:s');
             $this->common_model->insert_data('tbl_survey_response', $data_response);
             $id = $this->db->insert_id();
-            for ($i = 1; $i <= $survey_total_question; $i++) {
-                $data_question_response[$i]['survey_res_fk_id'] = $id;
-                $data_question_response[$i]['question_no'] = $i;
-                $data_question_response[$i]['question_type'] = $this->input->post('question_type_' . $i);
-                $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
-                $data_question_response[$i]['response_media_fk_id'] = $this->input->post('response_media_fk_id' . $i);
-                $data_question_response[$i]['add_time'] = date('Y-m-d H:i:s');
+            for ($i = 0; $i < $survey_total_question; $i++) {
+                $j = $i + 1;
+                $data['survey_response_data'][$i]['survey_res_fk_id'] = $id;
+                $data['survey_response_data'][$i]['question_no'] = $j;
+                $data['survey_response_data'][$i]['question_type'] = $this->input->post('question_type_' . $j);
+                $data['survey_response_data'][$i]['question_key'] = $this->input->post('question_key_' . $j);
+                $data['survey_response_data'][$i]['question_response'] = $this->input->post('response_' . $j);
+                $data['survey_response_data'][$i]['response_media_fk_id'] = $this->input->post('response_media_fk_id' . $j);
+                $data['survey_response_data'][$i]['add_time'] = date('Y-m-d H:i:s');
             }
-            $response = $this->common_model->insert_batch('tbl_survey_question_response', $data_question_response);
+            $response = $this->survey->save_response($data, $id);
         } else if (isset($survey_publish_status) && $survey_publish_status == 'draft_update') {
             $data_response['survey_res_status'] = 'draft';
             $data_response['modify_time'] = date('Y-m-d H:i:s');
             $survey_response_id = $this->input->post('survey_response_id');
             $this->common_model->update_data('tbl_survey_response', array('id' => $survey_response_id), $data_response);
-            for ($i = 1; $i <= $survey_total_question; $i++) {
-                $data_question_response[$i]['id'] = $this->input->post('question_response_id_' . $i);
-                $data_question_response[$i]['question_no'] = $i;
-                $data_question_response[$i]['question_type'] = $this->input->post('question_type_' . $i);
-                $data_question_response[$i]['question_response'] = $this->input->post('response_' . $i);
-                $data_question_response[$i]['response_media_fk_id'] = $this->input->post('response_media_fk_id' . $i);
-                $data_question_response[$i]['modify_time'] = date('Y-m-d H:i:s');
+            for ($i = 0; $i < $survey_total_question; $i++) {
+                $j = $i + 1;
+                $data['survey_response_data'][$i]['survey_res_fk_id'] = $survey_response_id;
+                $data['survey_response_data'][$i]['question_no'] = $j;
+                $data['survey_response_data'][$i]['question_type'] = $this->input->post('question_type_' . $j);
+                $data['survey_response_data'][$i]['question_key'] = $this->input->post('question_key_' . $j);
+                $data['survey_response_data'][$i]['question_response'] = $this->input->post('response_' . $j);
+                $data['survey_response_data'][$i]['response_media_fk_id'] = $this->input->post('response_media_fk_id' . $j);
+                $data['survey_response_data'][$i]['modify_time'] = date('Y-m-d H:i:s');
             }
-            $response = $this->common_model->update_batch('tbl_survey_question_response', $data_question_response, 'id');
+            $response = $this->survey->save_response($data, $survey_response_id);
         }
 
         return $response;
@@ -199,7 +207,8 @@ class Survey extends CI_Controller {
 
     public function survey_response_published($survey_response_id = NULL) {
         $survey_id = $this->common_model->fetch_cell('tbl_survey_response', 'survey_fk_id', array('id' => $survey_response_id));
-        $data['survey_question_data'] = $this->survey->get_published_response_feeds_by_args($survey_id, $survey_response_id, 'published');
+        $data['survey_question_data'] = $question_data = $this->survey->get_survey_questions_by_args($survey_id);
+        $data['survey_response_data'] = $this->survey->get_published_response_feeds_by_args($survey_id, $survey_response_id, 'published');
         $this->load->view($this->config->item('template') . '/survey/header/header_dashboard', $data);
         $this->load->view($this->config->item('template') . '/survey/main_contents/edit_publish_response');
         $this->load->view($this->config->item('template') . '/survey/footer/footer_dashboard');
@@ -207,9 +216,10 @@ class Survey extends CI_Controller {
 
     public function survey_response_draft($survey_response_id = NULL) {
         $survey_id = $this->common_model->fetch_cell('tbl_survey_response', 'survey_fk_id', array('id' => $survey_response_id));
-        $data['survey_question_data'] = $this->survey->get_published_response_feeds_by_args($survey_id, $survey_response_id, 'draft');
+        $data['survey_question_data'] = $question_data = $this->survey->get_survey_questions_by_args($survey_id);
+        $data['survey_response_data'] = $this->survey->get_published_response_feeds_by_args($survey_id, $survey_response_id, 'draft');
         $this->load->view($this->config->item('template') . '/survey/header/header_dashboard', $data);
-        $this->load->view($this->config->item('template') . '/survey/main_contents/edit_publish_response');
+        $this->load->view($this->config->item('template') . '/survey/main_contents/edit_draft_response');
         $this->load->view($this->config->item('template') . '/survey/footer/footer_dashboard');
     }
 
