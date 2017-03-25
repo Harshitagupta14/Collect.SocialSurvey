@@ -243,6 +243,8 @@ class Survey extends CI_Controller {
             $data = $this->handle_image_upload();
         } else if ($this->input->post('label') == 'MEDIAAUDIOUPLOAD') {
             $data = $this->handle_audio_upload();
+        } else if ($this->input->post('label') == 'MEDIASIGNATUREUPLOAD') {
+            $data = $this->handle_signature_upload();
         }
         echo json_encode($data);
         die;
@@ -312,12 +314,52 @@ class Survey extends CI_Controller {
                     $this->session->unset_userdata($full_path);
                 }
                 if ($id != '') {
-                    $this->session->set_userdata('file_name1', $data['file_name']);
-                    $this->session->set_userdata('full_path1', $data['full_path']);
+                    $this->session->set_userdata('file_name1', $data['media_file_name']);
+                    $this->session->set_userdata('full_path1', $data['media_full_path']);
                     $media_insert_id = $this->survey->add_media_details($media_id, $data['media_file_name'], $data['media_full_path'], $media_type, $id, $survey_id);
                     $data['media_session_id'] = $this->session->userdata('my_session_id');
                     $data['media_insert_id'] = $media_insert_id;
                 }
+            }
+        }
+        return $data;
+    }
+
+    public function handle_signature_upload() {
+        $media_type = "Signature";
+        $id = $this->input->post('response_id');
+        $survey_id = $this->input->post('survey_id');
+        $media_id = $this->input->post('media_insert_id');
+        $signature = $this->input->post('media');
+
+        $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/Collect.SocialSurvey/assets/uploads/response_signature/';
+
+        $img = str_replace('data:image/png;base64,', '', $signature);
+        $img = str_replace(' ', '+', $img);
+        $imgdata = base64_decode($img);
+
+        $filename = mktime() . ".png";
+        $file = $upload_dir . $filename;
+        $success = file_put_contents($file, $imgdata);
+        if (!$success) {
+            $data['error'] = array('error' => 'Unable to save the signature.');
+            $data['success'] = 'false';
+        } else {
+            $data['media_file_name'] = $filename;
+            $data['media_full_path'] = $file;
+            $data['success'] = 'true';
+            $file_name = 'file_name' . $id;
+            $full_path = 'full_path' . $id;
+            if ($this->session->userdata($file_name)) {
+                $this->session->unset_userdata($file_name);
+                $this->session->unset_userdata($full_path);
+            }
+            if ($id != '') {
+                $this->session->set_userdata('file_name1', $data['media_file_name']);
+                $this->session->set_userdata('full_path1', $data['media_full_path']);
+                $media_insert_id = $this->survey->add_media_details($media_id, $data['media_file_name'], $data['media_full_path'], $media_type, $id, $survey_id);
+                $data['media_session_id'] = $this->session->userdata('my_session_id');
+                $data['media_insert_id'] = $media_insert_id;
             }
         }
         return $data;

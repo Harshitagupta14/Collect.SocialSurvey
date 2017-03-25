@@ -190,6 +190,10 @@
             return create_response_audio(id);
         } else if (question_type == "SCALE") {
             return create_response_scale(id);
+        } else if (question_type == "SIGNATURE") {
+            return create_response_signature(id);
+        } else if (question_type == "NOTE") {
+            return create_response_notes(id);
         } else {
             return create_response_subjective(id);
         }
@@ -454,6 +458,57 @@
         return modal_body_scale_col;
     }
 
+    function create_response_signature(id) {
+        var media_id = document.querySelector('#response_media_fk_id' + id).value;
+        var modal_body_scale_col = document.createElement('div');
+        modal_body_scale_col.className = 'col-md-12';
+        var question_help_text = document.querySelector('#question_help_text_' + id).value;
+        var modal_body_scale_content_label = document.createElement('label');
+        modal_body_scale_content_label.innerHTML = question_help_text;
+        modal_body_scale_col.appendChild(modal_body_scale_content_label);
+        modal_body_scale_col.innerHTML = "<form enctype='multipart/form-data' method='post' id='mediaForm" + id + "'>"
+                + '<button class="btn btn-default" onclick="initsignature(' + id + ')" id="initsignaturebtn' + id + '" type="button" >Initialize Signature Pad</button>'
+                + "<input type='hidden' id='media_insert_id" + id + "' value='" + media_id + "'  hidden>"
+                + "<input type='hidden' id='media_session_id" + id + "' value=''  hidden>"
+                + "<input type='hidden' id='media_file_name" + id + "' value=''  hidden>"
+                + '<div id="signature-pad' + id + '" class="m-signature-pad" style=display:none;"><div class="m-signature-pad--body"><canvas></canvas>'
+                + '</div>'
+                + '<div class="m-signature-pad--footer">'
+                + '<div class="description">Sign above</div>'
+                + '<div class="left">'
+                + '<button type="button" class="btn btn-danger" data-action="clear">Clear</button>'
+                + '</div>'
+                + '<div class="right">'
+                + '<button type="button" class="btn btn-success" data-action="save-png">Save as PNG</button>'
+                + '</div>'
+                + '</div>'
+                + '</div></form>'
+                + "<div class='col-xs-12 col-sm-12 col-md-offset-1 col-md-10' id='media_uploading_icon_" + id + "' style='display:none;'>"
+                + "<img class='img-responsive' src='https://media.giphy.com/media/hA9LnXzyZTxmg/giphy.gif'></div>";
+
+        var script = document.createElement('script');
+        script.setAttribute('src', '<?php echo $this->config->item('frontassets'); ?>js/signature/signature_pad.js');
+        modal_body_scale_col.appendChild(script);
+        return modal_body_scale_col;
+    }
+
+
+    function create_response_notes(id) {
+        var modal_body_notes_col = document.createElement('div');
+        modal_body_notes_col.className = 'col-md-12';
+        var question_help_text = document.querySelector('#question_help_text_' + id).value;
+        var modal_body_notes_content_label = document.createElement('label');
+        modal_body_notes_content_label.innerHTML = question_help_text;
+        var modal_body_notes_content = document.createElement('textarea');
+        modal_body_notes_content.className = 'form-control';
+        modal_body_notes_content.setAttribute('id', 'modal_response_' + id);
+        modal_body_notes_content.setAttribute('placeholder', 'Type your answer');
+        modal_body_notes_col.appendChild(modal_body_notes_content_label);
+        modal_body_notes_col.appendChild(modal_body_notes_content);
+        return modal_body_notes_col;
+    }
+
+
     function multiple_choice_restriction(id, upperlimit) {
         var maxCheckboxes = upperlimit;
         $('input[name="modal_response_' + id + '"]').change(function () {
@@ -516,14 +571,23 @@
             var media_id = document.querySelector('#media_insert_id' + id).value;
             document.querySelector('#response_' + id).value = response;
             document.querySelector('#response_media_fk_id' + id).value = media_id;
-        }
-        else if (question_type == "PICTURE/CAMERA INPUT") {
+        } else if (question_type == "PICTURE/CAMERA INPUT") {
             var response = document.querySelector('#media_file_name' + id).value;
             var media_id = document.querySelector('#media_insert_id' + id).value;
             document.querySelector('#response_' + id).value = response;
             document.querySelector('#response_media_fk_id' + id).value = media_id;
+        } else if (question_type == "SIGNATURE") {
+            var response = document.querySelector('#media_file_name' + id).value;
+            var media_id = document.querySelector('#media_insert_id' + id).value;
+            document.querySelector('#response_' + id).value = response;
+            document.querySelector('#response_media_fk_id' + id).value = media_id;
+        } else if (question_type == "NOTE") {
+            var response = document.querySelector('#modal_response_' + id).value;
+            document.querySelector('#response_' + id).value = response.replace(/\r?\n/g, '<br />');
         }
         if (response != "undefined" && response != '') {
+            document.querySelector('#response_form_group_' + id).setAttribute('class', 'form-group');
+            document.querySelector('#response_error_block_' + id).style.display = 'none';
             document.querySelector('#question_' + id + '_badge').className = 'badge badge-success';
         } else {
             display_error("Empty Response , Unable to Save.");
@@ -543,10 +607,16 @@
         var valid = true;
         var total_question = document.querySelector('#total_question').value;
         for (var i = 1; i <= total_question; i++) {
-            var response = document.querySelector('#response_' + i).value;
-            if (response == '') {
-                reponse_invalid_list.push(i);
-                valid = false;
+            var question_mandatory = document.querySelector('#question_mandatory_' + i).value;
+            if (question_mandatory == '1') {
+                var response = document.querySelector('#response_' + i).value;
+                if (response == '') {
+                    document.querySelector('#question_' + i + '_badge').className = 'badge badge-danger';
+                    document.querySelector('#response_form_group_' + i).setAttribute('class', 'form-group has-error');
+                    document.querySelector('#response_error_block_' + i).style.display = 'block';
+                    reponse_invalid_list.push(i);
+                    valid = false;
+                }
             }
         }
         return valid;
@@ -674,7 +744,7 @@
     function audio_upload(id) {
         blob = new Blob(chunks, {type: media.type}), url = URL.createObjectURL(blob);
         console.log(url);
-        data = new FormData();
+        var data = new FormData();
         data.append('mediaFile', blob);
         data.append('response_id', id);
         data.append('survey_id', document.getElementById('survey_id').value);
@@ -710,6 +780,34 @@
             }
         });
     }
+
+    function ajax_signature_upload($formData, id) {
+        $.ajax({
+            type: "POST",
+            url: "<?php echo site_url('ajax-upload-media'); ?>",
+            data: $formData,
+            enctype: "multipart/form-data",
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function (x) {
+                document.getElementById('mediaForm' + id).style.display = 'none';
+                document.getElementById('media_uploading_icon_' + id).style.display = 'block';
+            },
+            success: function (stat)
+            {
+                var data = JSON.parse(stat);
+                if (data.media_insert_id != true) {
+                    document.getElementById('media_insert_id' + id).value = data.media_insert_id;
+                }
+                document.getElementById('media_file_name' + id).value = data.media_file_name;
+                document.getElementById('media_session_id' + id).value = data.media_session_id;
+                document.getElementById('mediaForm' + id).style.display = 'block';
+                document.getElementById('media_uploading_icon_' + id).style.display = 'none';
+            }
+        });
+    }
+
 
 </script>
 <script>
@@ -752,10 +850,188 @@
         });
     }
 </script>
+<script>
+    function initsignature(id) {
+        document.getElementById("signature-pad" + id).style.display = "block";
+        document.getElementById("initsignaturebtn" + id).style.display = "none";
+        var wrapper = document.getElementById("signature-pad" + id),
+                clearButton = wrapper.querySelector("[data-action=clear]"),
+                savePNGButton = wrapper.querySelector("[data-action=save-png]"),
+                canvas = wrapper.querySelector("canvas"),
+                signaturePad;
 
+// Adjust canvas coordinate space taking into account pixel ratio,
+// to make it look crisp on mobile devices.
+// This also causes canvas to be cleared.
+        function resizeCanvas() {
+            // When zoomed out to less than 100%, for some very strange reason,
+            // some browsers report devicePixelRatio as less than 1
+            // and only part of the canvas is cleared then.
+            var ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+        }
+
+        window.onresize = resizeCanvas;
+        resizeCanvas();
+
+        signaturePad = new SignaturePad(canvas);
+
+        clearButton.addEventListener("click", function (event) {
+            signaturePad.clear();
+        });
+
+        savePNGButton.addEventListener("click", function (event) {
+            if (signaturePad.isEmpty()) {
+                alert("Please provide signature first.");
+            } else {
+                var signature = signaturePad.toDataURL()
+                var data = new FormData();
+                data.append('response_id', id);
+                data.append('survey_id', document.getElementById('survey_id').value);
+                data.append('media_insert_id', document.getElementById('media_insert_id' + id).value);
+                data.append("label", "MEDIASIGNATUREUPLOAD");
+                data.append("media", signature);
+                ajax_signature_upload(data, id);
+                //window.open(signaturePad.toDataURL());
+            }
+        });
+    }
+</script>
 <style>
     #btns{
         display: none;
     }
+
+    .m-signature-pad {
+        font-size: 10px;
+        width: 700px;
+        height: 700px;
+        top: 50%;
+        left: 50%;
+        margin-left: -350px;
+        margin-top: -200px;
+    }
+
+    .m-signature-pad:before, .m-signature-pad:after {
+        z-index: -1;
+        content: "";
+        width: 40%;
+        height: 10px;
+        left: 20px;
+        bottom: 10px;
+        background: transparent;
+        -webkit-transform: skew(-3deg) rotate(-3deg);
+        -moz-transform: skew(-3deg) rotate(-3deg);
+        -ms-transform: skew(-3deg) rotate(-3deg);
+        -o-transform: skew(-3deg) rotate(-3deg);
+        transform: skew(-3deg) rotate(-3deg);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .m-signature-pad:after {
+        left: auto;
+        right: 20px;
+        -webkit-transform: skew(3deg) rotate(3deg);
+        -moz-transform: skew(3deg) rotate(3deg);
+        -ms-transform: skew(3deg) rotate(3deg);
+        -o-transform: skew(3deg) rotate(3deg);
+        transform: skew(3deg) rotate(3deg);
+    }
+
+    .m-signature-pad--body {
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        top: 20px;
+        bottom: 80px;
+        border: 1px solid #f4f4f4;
+    }
+
+    .m-signature-pad--body
+    canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 4px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.02) inset;
+    }
+
+    .m-signature-pad--footer {
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        height: 60px;
+    }
+
+    .m-signature-pad--footer
+    .description {
+        color: #C3C3C3;
+        text-align: center;
+        font-size: 1.2em;
+        margin-top: 1em;
+    }
+
+    .m-signature-pad--footer
+    .left, .right {
+        position: absolute;
+        bottom: 0;
+    }
+
+    .m-signature-pad--footer
+    .left {
+        left: 0;
+    }
+
+    .m-signature-pad--footer
+    .right {
+        right: 0;
+    }
+
+    @media screen and (max-width: 1024px) {
+        .m-signature-pad {
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: auto;
+            height: auto;
+            min-width: 250px;
+            min-height: 140px;
+            margin: 5%;
+        }
+    }
+
+    @media screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+        .m-signature-pad {
+            margin: 10%;
+        }
+    }
+
+    @media screen and (max-height: 320px) {
+        .m-signature-pad--body {
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 32px;
+        }
+        .m-signature-pad--footer {
+            left: 20px;
+            right: 20px;
+            bottom: 4px;
+            height: 28px;
+        }
+        .m-signature-pad--footer
+        .description {
+            font-size: 1em;
+            margin-top: 1em;
+        }
+    }
+
 </style>
+
 </html>

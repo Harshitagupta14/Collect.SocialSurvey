@@ -1449,18 +1449,17 @@ class Flexi_auth_model extends Flexi_auth_lite_model {
                     $this->reset_login_attempts($identity);
                 }
 
-
                 // Set user login sessions.
                 if ($this->set_login_sessions($user, TRUE)) {
                     // Set 'Remember me' cookie and database record if checked by user.
-                    if ($remember_user) {
-                        $this->remember_user($user->{$this->auth->database_config['user_acc']['columns']['id']});
-                    }
+                    //if ($remember_user) {
+                    // $this->remember_user($user->{$this->auth->database_config['user_acc']['columns']['id']});
+                    // }
                     // Else, ensure any existing 'Remember me' cookies are deleted.
                     // This can occur if the user logs in via password, whilst already logged in via a "Remember me" cookie.
-                    else {
-                        $this->flexi_auth_lite_model->delete_remember_me_cookies();
-                    }
+                    //else {
+                    //     $this->flexi_auth_lite_model->delete_remember_me_cookies();
+                    // }
                     return TRUE;
                 }
             }

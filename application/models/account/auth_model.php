@@ -49,7 +49,7 @@ class Auth_model extends CI_Model {
         $this->form_validation->set_rules('login_identity', 'Identity (Email / Login)', 'required');
         $this->form_validation->set_rules('login_password', 'Password', 'required');
         if ($this->form_validation->run()) {
-            $remember_user = 1;
+            $remember_user = TRUE;
             return $this->flexi_auth->login($this->input->post('login_identity'), $this->input->post('login_password'), $remember_user);
             $this->session->set_flashdata('message', $this->flexi_auth->get_messages());
             $this->data['message'] = $this->flexi_auth->get_messages();

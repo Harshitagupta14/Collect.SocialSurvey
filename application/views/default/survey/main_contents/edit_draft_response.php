@@ -3,7 +3,7 @@
         <div class="question-overlay"></div>
         <div class="question-modal"></div>
 
-        <div class="col-md-6">
+        <div class="col-md-12">
             <h1 class="page-title"> <?php echo ucfirst($survey_question_data[0]['survey_title']); ?>
                 <small>Survey</small>
             </h1>
@@ -26,56 +26,62 @@
                         ?>
                         <div class="col-md-12">
                             <div class="row">
-                                <div class="portlet light ">
-                                    <div class="portlet-title tabbable-line">
-                                        <div class="caption">
-                                            <i class=" icon-social-twitter font-dark hide"></i>
-                                            <span class="badge <?php echo $badge_success; ?>" id="question_<?php echo $value['question_no']; ?>_badge"> <?php echo $value['question_no']; ?> </span>
-                                            <span class="caption-subject font-dark bold uppercase"><?php echo $value['type_name']; ?></span>
+                                <?php if ($value['type_name'] != 'SECTION BREAK') { ?>
+                                    <div class="portlet light ">
+                                        <div class="portlet-title tabbable-line">
+                                            <div class="caption">
+                                                <i class=" icon-social-twitter font-dark hide"></i>
+                                                <span class="badge <?php echo $badge_success; ?>" id="question_<?php echo $value['question_no']; ?>_badge"> <?php echo $value['question_no']; ?> </span>
+                                                <span class="caption-subject font-dark bold uppercase"><?php echo $value['type_name']; ?></span>
+                                            </div>
+                                            <?php if ($value['question_mandatory'] == '1') { ?><span class="question-required-label"></span><?php } ?>
                                         </div>
-                                        <span class="question-required-label"></span>
-                                    </div>
-                                    <div class="portlet-body">
-                                        <div class="tab-content">
-                                            <div class="tab-pane active" id="tab_actions_pending">
-                                                <!-- BEGIN: Actions -->
-                                                <div class="mt-actions">
-                                                    <div class="mt-action">
-                                                        <div class="mt-action-body">
-                                                            <div class="mt-action-row">
-                                                                <div class="mt-action-info ">
-                                                                    <div class="mt-action-icon ">
-                                                                        <i class="icon-magnet"></i>
-                                                                    </div>
-                                                                    <div class="mt-action-details ">
-                                                                        <span class="mt-action-author"><?php echo $value['question_title']; ?></span>
-                                                                        <p class="mt-action-desc"><?php echo (isset($value['question_help_text']) && $value['question_help_text'] != '') ? $value['question_help_text'] : 'Please Answer'; ?></p>
-                                                                        <input type="hidden" id="question_title_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_title']; ?>" />
-                                                                        <input type="hidden" id="question_help_text_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_help_text']; ?>" />
-                                                                        <input type="hidden" id="question_one_word_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_one_word']; ?>" />
-                                                                        <input type="hidden" id="question_limit_lower_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_limit_lower']; ?>" />
-                                                                        <input type="hidden" id="question_limit_upper_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_limit_upper']; ?>" />
-                                                                        <input type="hidden" id="question_multiple_options_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_multiple_options']; ?>" />
-                                                                        <input type="hidden" id="question_type_<?php echo $value['question_no']; ?>" value="<?php echo $value['type_name']; ?>" name="question_type_<?php echo $value['question_no']; ?>"/>
-                                                                        <input type="hidden" id="question_key_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_key']; ?>" name="question_key_<?php echo $value['question_no']; ?>" />
+                                        <div class="portlet-body">
+                                            <div class="tab-content">
+                                                <div class="tab-pane active" id="tab_actions_pending">
+                                                    <!-- BEGIN: Actions -->
+                                                    <div class="mt-actions">
+                                                        <div class="mt-action">
+                                                            <div class="mt-action-body">
+                                                                <div class="mt-action-row">
+                                                                    <div class="mt-action-info ">
+                                                                        <div class="mt-action-icon ">
+                                                                            <i class="icon-magnet"></i>
+                                                                        </div>
+                                                                        <div class="mt-action-details ">
+                                                                            <span class="mt-action-author"><?php echo $value['question_title']; ?></span>
+                                                                            <p class="mt-action-desc"><?php echo (isset($value['question_help_text']) && $value['question_help_text'] != '') ? $value['question_help_text'] : 'Please Answer'; ?></p>
+                                                                            <input type="hidden" id="question_title_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_title']; ?>" />
+                                                                            <input type="hidden" id="question_mandatory_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_mandatory']; ?>" />
+                                                                            <input type="hidden" id="question_help_text_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_help_text']; ?>" />
+                                                                            <input type="hidden" id="question_one_word_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_one_word']; ?>" />
+                                                                            <input type="hidden" id="question_limit_lower_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_limit_lower']; ?>" />
+                                                                            <input type="hidden" id="question_limit_upper_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_limit_upper']; ?>" />
+                                                                            <input type="hidden" id="question_multiple_options_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_multiple_options']; ?>" />
+                                                                            <input type="hidden" id="question_type_<?php echo $value['question_no']; ?>" value="<?php echo $value['type_name']; ?>" name="question_type_<?php echo $value['question_no']; ?>"/>
+                                                                            <input type="hidden" id="question_key_<?php echo $value['question_no']; ?>" value="<?php echo $value['question_key']; ?>" name="question_key_<?php echo $value['question_no']; ?>" />
 
-                                                                        <input type="hidden" name="question_response_id_<?php echo $value['question_no']; ?>" value="<?php echo $survey_response_data[$key]['question_response_id']; ?>" name="question_type_<?php echo $value['question_no']; ?>" />
+                                                                            <input type="hidden" name="question_response_id_<?php echo $value['question_no']; ?>" value="<?php echo $survey_response_data[$key]['question_response_id']; ?>" name="question_type_<?php echo $value['question_no']; ?>" />
 
-                                                                        <input type="hidden" id="response_media_fk_id<?php echo $value['question_no']; ?>" value="<?php echo $survey_response_data[$key]['response_media_fk_id']; ?>" name="response_media_fk_id<?php echo $value['question_no']; ?>"/>
+                                                                            <input type="hidden" id="response_media_fk_id<?php echo $value['question_no']; ?>" value="<?php echo $survey_response_data[$key]['response_media_fk_id']; ?>" name="response_media_fk_id<?php echo $value['question_no']; ?>"/>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="mt-action-row">
-                                                                <div class="col-md-12" style="padding-top:10px;">
-                                                                    <!--input-group-->
-                                                                    <a class="input-group" data-toggle="modal" href="#modal_<?php echo $value['question_no']; ?>" onclick="create_modal(<?php echo $value['question_no']; ?>);" data-question-type="<?php echo $value['type_name']; ?>" style="cursor:pointer;" onclick="create_modal(<?php echo $value['question_no']; ?>);">
+                                                                <div class="mt-action-row">
+                                                                    <div class="col-md-12" style="padding-top:10px;">
+                                                                        <!--input-group-->
+                                                                        <div class="form-group" id="response_form_group_<?php echo $value['question_no']; ?>">
+                                                                            <a class="input-group" data-toggle="modal" href="#modal_<?php echo $value['question_no']; ?>" onclick="create_modal(<?php echo $value['question_no']; ?>);" data-question-type="<?php echo $value['type_name']; ?>" style="cursor:pointer;" onclick="create_modal(<?php echo $value['question_no']; ?>);">
 
-                                                                        <input class="form-control" id="response_<?php echo $value['question_no']; ?>" name="response_<?php echo $value['question_no']; ?>" placeholder="" readonly="" type="text" style="cursor:pointer;" value="<?php echo $question_response; ?>">
-                                                                        <span class="input-group-btn">
-                                                                            <i class="btn blue fa fa-arrow-right"></i>
-                                                                        </span>
-                                                                    </a>
-                                                                    <!--/input-group-->
+                                                                                <input class="form-control" id="response_<?php echo $value['question_no']; ?>" name="response_<?php echo $value['question_no']; ?>" placeholder="" readonly="" type="text" style="cursor:pointer;" value="<?php echo $question_response; ?>">
+                                                                                <span class="input-group-btn">
+                                                                                    <i class="btn blue fa fa-arrow-right"></i>
+                                                                                </span>
+                                                                            </a>
+                                                                            <span class="help-block" style="display:none;" id="response_error_block_<?php echo $value['question_no']; ?>" >Please answer this question.</span>
+                                                                        </div>
+                                                                        <!--/input-group-->
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -84,7 +90,17 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                <?php } else if ($value['type_name'] == 'SECTION BREAK') { ?>
+                                    <input type="hidden" id="question_mandatory_<?php echo $value['question_no']; ?>" value="0" />
+                                    <div class="portlet light" style="background-color:#91BAE1 !important; padding:0px 20px 0px !important;">
+                                        <div class="portlet-title" style="border-bottom:none !important; min-height: 0px !important; margin-bottom: 0px !important;">
+                                            <div class="caption">
+                                                <span class="caption-subject font-dark bold uppercase"><?php echo $value['type_name']; ?> </span><br/>
+                                                <span class="section-break-title" style="font-size:14px;"><?php echo $value['question_title']; ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
                             </div>
                         </div>
 
