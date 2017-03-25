@@ -29,7 +29,7 @@
                         foreach ($survey_feeds as $survey) {
                             //$survey['response_count'] = $this->common_model->num_rows('tbl_survey_response', array('survey_fk_id' => $survey['id']));
                             ?>
-                            <div class="col-md-4" data-survey-id="<?php echo $survey['survey_id']; ?>">
+                            <div class="col-md-4 survey_card" data-survey-id="<?php echo $survey['survey_id']; ?>" data-survey-title="<?php echo $survey['survey_title']; ?>">
                                 <!-- BEGIN Portlet PORTLET-->
                                 <div class="portlet light">
                                     <div class="portlet-title">

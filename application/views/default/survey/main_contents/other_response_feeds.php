@@ -21,7 +21,7 @@
                                             <span class="badge badge-danger"> <?php echo (isset($survey['question_count']) && $survey['question_count'] != 0) ? $survey['question_count'] : '0'; ?> </span>
                                         </a>
                                     </li>
-                                    <li style="float:right;"><i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo $this->components->time_elapsed_string($survey['add_time']); ?></li>
+                                    <li style="float:right;"><i class="fa fa-clock-o" aria-hidden="true"></i> <?php echo $this->components->time_taken($survey['survey_res_start_time'],$survey['survey_res_end_time']); ?></li>
                                 </ul>
 
                             </div>

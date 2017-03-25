@@ -35,4 +35,27 @@ class Components {
         return $string ? implode(', ', $string) . ' ago' : 'just now';
     }
 
+    function time_taken($start_time, $end_time) {
+        $res_start_time = new DateTime($start_time);
+        $res_end_time = new DateTime($end_time);
+        $diff = $res_start_time->diff($res_end_time);
+        $diff->w = ($diff->d / 7);
+        $diff->d -= $diff->w * 7;
+        $string = array(
+            'h' => 'hour',
+            'i' => 'minute',
+            's' => 'second',
+        );
+        foreach ($string as $k => &$v) {
+            if ($diff->$k) {
+                $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+            } else {
+                unset($string[$k]);
+            }
+        }
+        if (!$full)
+            $string = array_slice($string, 0, 1);
+        return $string ? 'Time Taken : ' . implode(', ', $string) : ' ';
+    }
+
 }

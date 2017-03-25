@@ -73,7 +73,7 @@
                 transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1) 0s;
             }
             .mdl-snackbar--active {
-                //transform: translate(-50%, 0px);
+                /**transform: translate(-50%, 0px);*/
             }
             .mdl-snackbar__action {
                 align-self: center;

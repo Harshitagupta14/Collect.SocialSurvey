@@ -42,6 +42,7 @@
         <script>
             var baseurl = '<?= base_url() ?>';
         </script>
+         <script src="<?= $this->config->item('adminassets'); ?>global/plugins/search.js" type="text/javascript"></script>
     </head>
     <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-md"  id="scrollable_container">
         <!-- BEGIN HEADER -->
@@ -106,7 +107,7 @@
                     <!-- DOC: Apply "search-form-expanded" right after the "search-form" class to have half expanded search box -->
                     <form class="search-form search-form-expanded" action="page_general_search_3.html" method="GET">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search..." name="query">
+                            <input type="text" class="form-control" placeholder="Search..." name="query" onkeyup="show(this)">
                             <span class="input-group-btn">
                                 <a href="javascript:;" class="btn submit">
                                     <i class="icon-magnifier"></i>

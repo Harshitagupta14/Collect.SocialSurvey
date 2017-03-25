@@ -61,6 +61,8 @@ class Survey extends CI_Controller {
         $survey_publish_status = $this->input->post('survey_publish_status');
         if (isset($survey_publish_status) && $survey_publish_status == 'publish_insert') {
             $data_response['survey_res_status'] = 'published';
+            $data_response['survey_res_start_time'] = $this->input->post('start_time');
+            $data_response['survey_res_end_time'] = date('H:i:s');
             $data_response['add_time'] = date('Y-m-d H:i:s');
             $this->common_model->insert_data('tbl_survey_response', $data_response);
             $id = $this->db->insert_id();
